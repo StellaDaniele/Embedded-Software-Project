@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.rmd": "markdown",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "stdint.h": "c"
     }
 }
