@@ -49,10 +49,16 @@ void StringPgm(const char* str) {
             WAIT_FOR_PIN_LOW(PIND, PIND2)
             // Transmit the content of the data pins
             // UDR0 = (PINC & 15) | (PIND & 240);
+            /*
             UDR0 = (PINC & ((1 << PINC0) | (1 << PINC1) |
                             (1 << PINC2) | (1 << PINC3))) |
                    (PIND & ((1 << PIND4) | (1 << PIND5) |
                             (1 << PIND6) | (1 << PIND7)));
+            */
+            UDR0 = (PINC & ((1 << PINC0) | (1 << PINC1) |
+                            (1 << PINC2) | (1 << PINC3) |
+                            (1 << PINC4) | (1 << PINC5) |
+                            (1 << PINC6) | (1 << PINC7)));
             WAIT_FOR_BYTE_TRANSMISSION_USART
             /*
             while (!(PIND & (1 << PIND2)))

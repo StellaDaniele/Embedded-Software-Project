@@ -21,7 +21,8 @@ int main() {
     camInit();
     setResolution();
     setColor();
-    setClocl(5);
+    // setClocl(5);
+    setClocl(10);
 
     while (true) {
         captureImg(WIDTH, HEIGHT);
