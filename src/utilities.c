@@ -1,4 +1,4 @@
-#include "utilities.hpp"
+#include "utilities.h"
 
 #include <avr/io.h>
 #include <util/delay.h>

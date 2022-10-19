@@ -1,10 +1,10 @@
-#include "camera_setup.hpp"
+#include "camera_setup.h"
 
 #include <util/delay.h>
 #include <util/twi.h>
 
-#include "macros_regs_ov7670.hpp"
-#include "utilities.hpp"
+#include "macros_regs_ov7670.h"
+#include "utilities.h"
 
 #define WAIT_FOR_TRANSMISSION_TWI  \
     while (!(TWCR & (1 << TWINT))) \

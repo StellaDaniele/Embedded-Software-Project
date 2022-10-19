@@ -1,4 +1,4 @@
-#include "capture.hpp"
+#include "capture.h"
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
