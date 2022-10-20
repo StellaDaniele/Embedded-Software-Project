@@ -194,3 +194,11 @@ void float_to_int(float number, char digits, int *integer_part, int *floating_pa
     *integer_part = (int)number;
     *floating_part = (number - (float)*integer_part) * power(10, digits);
 }
+
+void disp_str_num(unsigned char a, unsigned char b, char str[], int num) {
+    disp_str(a, b, str);
+    int len = 0;
+    for (len = 0; str[len] != '\0'; len++)
+        ;
+    disp_num(a + len, b, num);
+}
