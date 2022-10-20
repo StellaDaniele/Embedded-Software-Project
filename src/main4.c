@@ -21,9 +21,8 @@ int main(void) {
             error_led();
         }
 
-        disp_pos(1, 1, (int)temperature);
-        disp_pos(1, 2, (int)humidity);
-
+        disp_str_num(1,1,"TEMP: ", (int)temperature);
+        disp_str_num(1,2,"HUMI: ", (int)humidity);
         // DHT11 sampling rate is 1HZ.
         _delay_ms(1000);
     }
