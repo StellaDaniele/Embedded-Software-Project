@@ -4,10 +4,6 @@
 #include "DHT11.h"
 #include "LCD_display.h"
 #include "utilities.h"
-// for DHT11,
-//      VCC: 5V or 3V
-//      GND: GND
-//      DATA: 2
 
 int main(void) {
     start_lcd();
