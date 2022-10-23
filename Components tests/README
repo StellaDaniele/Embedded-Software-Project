@@ -1,4 +1,4 @@
 In this directory you can find the source code of the various tests I made during the integration of the components used for this project.
 Some if not most of them might not work since the majority of the code they relied on has been changed during the development of the final driver code. Furthermore, there will be some conflicts with the linker if used as some of the functions are part of other files.
 I think it is better to only look at the code if useful, because I highly doubt anything will still work (without at least some modifications).
-Anyways, to use one of these, move the desired file in the `src` directory, moving the main program out of there. 
+Anyways, to use one of these tests, move the desired file(s) .c in the `src` directory and .h in `include` directory. As they have the main() function in them, the main program must be moved out of the `src` directory before compiling.
