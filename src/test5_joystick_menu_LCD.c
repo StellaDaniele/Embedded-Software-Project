@@ -74,6 +74,41 @@ enum joystick_dir disp_joystick_pos() {
     return dir_nothing;
 }
 
+int selection_x = 1, selection_y = 1;
+
+void menu(void) {
+    switch (current) {
+        case D:
+            if (selection_y + 1 > 4) break;
+            disp_str(selection_x, selection_y, " ");
+            disp_str(selection_x, ++selection_y, ">");
+            break;
+        case U:
+            if (selection_y - 1 < 1) break;
+            disp_str(selection_x, selection_y, " ");
+            disp_str(selection_x, --selection_y, ">");
+            break;
+        case R:
+            if (selection_x + 11 > 20) break;
+            disp_str(selection_x, selection_y, " ");
+            selection_x += 11;
+            disp_str(selection_x, selection_y, ">");
+            break;
+        case L:
+            if (selection_x - 11 < 1) break;
+            disp_str(selection_x, selection_y, " ");
+            selection_x -= 11;
+            disp_str(selection_x, selection_y, ">");
+            break;
+        case C:
+            disp_str(selection_x, selection_y, " ");
+            disp_str(selection_x, selection_y, "*");
+            break;
+        default:
+            break;
+    }
+}
+
 int main(void) {
     init_ADC();
     start_lcd();
@@ -81,11 +116,16 @@ int main(void) {
     bool first = true;
     DDRJ &= ~(1 << DDJ1);
     PORTJ |= (1 << PORTJ1);  // pull-up resistor
+    disp_str(selection_x, selection_y, ">");
+    disp_str(2, 1, "FIRST");
+    disp_str(2, 2, "SECOND");
+    disp_str(13, 1, "THIRD");
+    disp_str(13, 2, "FOURTH");
     while (1) {
         switch (disp_joystick_pos()) {
             case dir_nothing:
                 first = true;
-                disp_str(1, 1, "W");
+                // disp_str(1, 1, "W");
                 break;
             case U:
                 if (first) new_value = true;
@@ -118,8 +158,9 @@ int main(void) {
                 break;
         }
         if (new_value) {
-            disp_num(1, 1, current);
+            // disp_num(1, 1, current);
             new_value = false;
+            menu();
         }
     }
 }
