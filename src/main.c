@@ -6,6 +6,9 @@
 
 #include "DHT11.h"
 #include "LCD_display.h"
+#include "arduino_init.h"
+#include "camera_setup.h"
+#include "capture.h"
 #include "joystick.h"
 #include "menu.h"
 #include "utilities.h"
@@ -37,6 +40,34 @@ void temp_humi_state(void) {
 void relay_state(void) {
     PORTJ &= ~(1 << PORTJ0);
     disp_str(1, 1, "Relay ON");
+    while (true) {
+        if (joystick_new_direction()) {
+            if (current == C) {
+                PORTJ ^= (1 << PORTJ0);
+                clrscr();
+                disp_str(1, 1, (PORTJ & (1 << PORTJ0)) ? "Relay OFF" : "Relay ON");
+            }
+        }
+    }
+}
+
+void camera_state(void) {
+    // Setup
+    arduinoUnoInit();
+    camInit();
+    setResolution();
+    setColor();
+    // setClocl(5);
+    setClocl(10);
+    disp_str(1, 1, "Sending images on");
+    disp_str(1, 2, "serial 0...");
+    _delay_ms(100);
+    int i = 0;
+    disp_str_num(1, 3, "Images sent: ", i);
+    while (true) {
+        captureImg(320, 240);
+        disp_num(14, 3, ++i);
+    }
 }
 
 int main(void) {
@@ -59,7 +90,8 @@ int main(void) {
                     temp_humi_state();
                     break;
                 case CAMERA:
-                    disp_str(1, 1, "in CAMERA");
+                    // disp_str(1, 1, "in CAMERA");
+                    camera_state();
                     break;
                 case RELAY:
                     // disp_str(1, 1, "in RELAY");
