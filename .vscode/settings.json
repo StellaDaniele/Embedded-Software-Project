@@ -5,6 +5,8 @@
         "stdint.h": "c",
         "lcd_display.h": "c",
         "simpledht.h": "c",
-        "io.h": "c"
+        "io.h": "c",
+        "joystick.h": "c",
+        "interrupt.h": "c"
     }
 }
