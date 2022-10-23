@@ -5,6 +5,7 @@
 #include "LCD_display.h"
 #include "utilities.h"
 
+/*
 int main(void) {
     start_lcd();
     uint8_t temperature = 0;
@@ -29,3 +30,4 @@ int main(void) {
         _delay_ms(1000);
     }
 }
+*/
