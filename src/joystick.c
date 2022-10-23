@@ -17,7 +17,7 @@
     ADMUX |= (1 << MUX0);
 
 static int value_x = 0, value_y = 0;
-static enum joystick_dir old = dir_nothing;
+// static enum joystick_dir old = dir_nothing;
 static bool new_value = false, first = true;
 
 #define UP "U"
