@@ -19,7 +19,8 @@ enum joystick_dir { dir_nothing,
                     D,
                     R,
                     L,
-                    C } old;
+                    C } old = dir_nothing,
+                        current;
 
 int value_x = 0, value_y = 0;
 
@@ -76,30 +77,49 @@ enum joystick_dir disp_joystick_pos() {
 int main(void) {
     init_ADC();
     start_lcd();
-    old = dir_nothing;
-    // bool new = true;
+    bool new_value = false;
+    bool first = true;
     DDRJ &= ~(1 << DDJ1);
-    PORTJ |= (1 << PORTJ1); // pull-up resistor
+    PORTJ |= (1 << PORTJ1);  // pull-up resistor
     while (1) {
         switch (disp_joystick_pos()) {
             case dir_nothing:
+                first = true;
                 disp_str(1, 1, "W");
                 break;
             case U:
-                disp_str(1, 1, UP);
+                if (first) new_value = true;
+                first = false;
+                current = U;
                 break;
             case D:
-                disp_str(1, 1, DOWN);
+                if (first) new_value = true;
+                first = false;
+                current = D;
+                // disp_str(1, 1, DOWN);
                 break;
             case L:
-                disp_str(1, 1, LEFT);
+                if (first) new_value = true;
+                first = false;
+                current = L;
+                // disp_str(1, 1, LEFT);
                 break;
             case R:
-                disp_str(1, 1, RIGHT);
+                if (first) new_value = true;
+                first = false;
+                current = R;
+                // disp_str(1, 1, RIGHT);
                 break;
             case C:
-                disp_str(1, 1, "C");
+                if (first) new_value = true;
+                first = false;
+                current = C;
+                // disp_str(1, 1, "C");
                 break;
+        }
+        if (new_value) {
+            disp_num(1, 1, current);
+            new_value = false;
         }
     }
 }
