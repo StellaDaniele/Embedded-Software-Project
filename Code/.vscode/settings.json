@@ -7,6 +7,7 @@
         "simpledht.h": "c",
         "io.h": "c",
         "joystick.h": "c",
-        "interrupt.h": "c"
+        "interrupt.h": "c",
+        "board_init.h": "c"
     }
 }

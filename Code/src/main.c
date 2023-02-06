@@ -6,7 +6,7 @@
 
 #include "DHT11.h"
 #include "LCD_display.h"
-#include "arduino_init.h"
+#include "board_init.h"
 #include "camera_setup.h"
 #include "capture.h"
 #include "joystick.h"

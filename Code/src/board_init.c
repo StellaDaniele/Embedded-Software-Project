@@ -1,4 +1,4 @@
-#include "arduino_init.h"
+#include "board_init.h"
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
