@@ -2,7 +2,6 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include <avr/wdt.h>  // watchdog timer
 #include <stddef.h>
 #include <stdint.h>
 #include <util/delay.h>
@@ -15,6 +14,7 @@
 #include "menu.h"
 #include "states_functions.h"
 #include "utilities.h"
+#include "general.h"
 
 void sensors_state(void) {
     uint8_t temperature = 0;
@@ -75,7 +75,5 @@ void settings_state(void) {
 }
 
 void reboot_state(void) {
-    wdt_enable(WDTO_15MS);
-    while (1)
-        ;
+    reset_board();
 }
