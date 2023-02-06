@@ -1,3 +1,6 @@
+#ifndef __LCD_DISPLAY_H__
+#define __LCD_DISPLAY_H__
+
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -30,3 +33,5 @@ void disp_pos(unsigned char a, unsigned char b, unsigned int num);  // Displays 
 void disp_num(unsigned char a, unsigned char b, int num);           // Displays the given number (both positive and negative) on the display, at the given coordinates
 void disp_float(char a, char b, float num, unsigned char prec);     // Displays the given float number on the display, at the given coordinates
 void disp_str_num(unsigned char a, unsigned char b, char str[], int num);
+
+#endif

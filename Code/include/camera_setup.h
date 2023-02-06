@@ -1,5 +1,5 @@
-#ifndef HPP_CAMERA_SETUP
-#define HPP_CAMERA_SETUP
+#ifndef __CAMERA_SETUP_H__
+#define __CAMERA_SETUP_H__
 
 #include <stdint.h>
 

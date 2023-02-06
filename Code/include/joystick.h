@@ -1,5 +1,6 @@
-#ifndef H_JOYSTICK
-#define H_JOYSTICK
+#ifndef __JOYSTICK_H__
+#define __JOYSTICK_H__
+
 #include <stdbool.h>
 enum joystick_dir { dir_nothing,
                     U,

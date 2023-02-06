@@ -1,5 +1,5 @@
-#ifndef STATES_FUNCTIONS_H
-#define STATES_FUNCTIONS_H
+#ifndef __STATES_FUNCTIONS_H__
+#define __STATES_FUNCTIONS_H__
 
 void sensors_state(void);
 void relay_state(void);

@@ -1,5 +1,5 @@
-#ifndef HPP_BOARD_INIT
-#define HPP_BOARD_INIT
+#ifndef __BOARD_INIT_H__
+#define __BOARD_INIT_H__
 
 void arduinoUnoInit();
 

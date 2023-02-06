@@ -1,7 +1,8 @@
+#ifndef __DHT11_H__
+#define __DHT11_H__
+
 #include <avr/io.h>
 #include <stdint.h>
-#ifndef H_DHT1
-#define H_DHT1
 
 #define PIN_DHT PINA
 #define PORT_DHT PORTA

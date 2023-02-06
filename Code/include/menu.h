@@ -1,5 +1,5 @@
-#ifndef H_MENU
-#define H_MENU
+#ifndef __MENU_H__
+#define __MENU_H__
 #include <stdbool.h>
 
 #include "joystick.h"

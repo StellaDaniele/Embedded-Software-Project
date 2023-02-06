@@ -1,4 +1,4 @@
-#ifndef HPP_CAPTURE
+#ifndef __CAPTURE_H__
 #define HPP_CAPTURE
 
 #include <stdint.h>

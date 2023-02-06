@@ -1,5 +1,5 @@
-#ifndef HPP_UTILITIES
-#define HPP_UTILITIES
+#ifndef __UTILITIES_H__
+#define __UTILITIES_H__
 #include <stdint.h>
 
 enum error_types { GENERAL_ERROR,

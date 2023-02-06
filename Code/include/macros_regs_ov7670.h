@@ -1,5 +1,5 @@
-#ifndef HPP_MACROS_REGS_OV670
-#define HPP_MACROS_REGS_OV670
+#ifndef __MACROS_REGS_OV670_H__
+#define __MACROS_REGS_OV670_H__
 
 #include <avr/pgmspace.h>
 #include <stdint.h>
