@@ -8,6 +8,7 @@ static int selection_x = 1, selection_y = 1;
 void init_menu() {
     curr_state = MENU;
     new_state = false;
+    clrscr();
     disp_str(selection_x, selection_y, ">");
     disp_str(2, 1, "TEMP_HUM");
     disp_str(2, 2, "CAMERA");

@@ -24,7 +24,7 @@ void arduinoUnoInit() {
               (1 << PORTD4) | (1 << PORTD5) |
               (1 << PORTD6) | (1 << PORTD7)*/
     );
-    _delay_ms(3000);
+    //_delay_ms(3000);
 
     // set up twi for 100khz
     // TWI = Two Wire Interface (I2C)
