@@ -34,7 +34,7 @@ int main(void) {
 
     DDRJ |= (1 << DDJ0);
     PORTJ |= (1 << PORTJ0);
-    arduinoUnoInit();
+    //arduinoUnoInit();
     init_joystick();
     start_lcd();
     init_menu();

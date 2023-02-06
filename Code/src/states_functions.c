@@ -71,3 +71,7 @@ void camera_state(void) {
         disp_num(14, 3, ++i);
     }
 }
+
+void settings(void){
+
+}
