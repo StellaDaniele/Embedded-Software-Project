@@ -3,6 +3,7 @@
 #include "LCD_display.h"
 #include "joystick.h"
 
+bool new_state;
 static int selection_x = 1, selection_y = 1;
 
 void init_menu() {

@@ -8,7 +8,7 @@ enum states { MENU,
               CAMERA,
               SETTINGS,
               REBOOT } curr_state;
-bool new_state;
+extern bool new_state;
 
 void init_menu();
 void menu(enum joystick_dir current);
