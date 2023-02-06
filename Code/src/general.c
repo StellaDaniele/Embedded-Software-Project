@@ -1,10 +1,10 @@
-#include "board_init.h"
+#include "general.h"
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
 
-void general_init() {
+void board_init() {
     /*
     The timer 1 is used to generate an interrupt
     every 1ms in order to keep track of time

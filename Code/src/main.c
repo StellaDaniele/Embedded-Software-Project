@@ -6,7 +6,7 @@
 
 #include "DHT11.h"
 #include "LCD_display.h"
-#include "board_init.h"
+#include "general.h"
 #include "camera_setup.h"
 #include "capture.h"
 #include "joystick.h"
@@ -17,7 +17,7 @@
 volatile uint64_t curr_time_ms = 0;
 
 int main(void) {
-    general_init();
+    board_init();
     init_joystick();
     start_lcd();
     init_menu();
