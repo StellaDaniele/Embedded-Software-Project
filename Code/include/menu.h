@@ -4,9 +4,10 @@
 
 #include "joystick.h"
 enum states { MENU,
-              TEMP_HUM,
+              SENSORS,
               CAMERA,
-              RELAY } curr_state;
+              SETTINGS,
+              REBOOT } curr_state;
 bool new_state;
 
 void init_menu();

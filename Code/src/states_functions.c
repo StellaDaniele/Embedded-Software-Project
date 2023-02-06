@@ -1,6 +1,8 @@
 #include "states_functions.h"
+
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <avr/wdt.h>  // watchdog timer
 #include <stddef.h>
 #include <stdint.h>
 #include <util/delay.h>
@@ -11,8 +13,8 @@
 #include "capture.h"
 #include "joystick.h"
 #include "menu.h"
-#include "utilities.h"
 #include "states_functions.h"
+#include "utilities.h"
 
 void sensors_state(void) {
     uint8_t temperature = 0;
@@ -38,20 +40,6 @@ void sensors_state(void) {
     }
 }
 
-void relay_state(void) {
-    PORTJ &= ~(1 << PORTJ0);
-    disp_str(1, 1, "Relay ON");
-    while (true) {
-        if (joystick_new_direction()) {
-            if (current == C) {
-                PORTJ ^= (1 << PORTJ0);
-                clrscr();
-                disp_str(1, 1, (PORTJ & (1 << PORTJ0)) ? "Relay OFF" : "Relay ON");
-            }
-        }
-    }
-}
-
 void camera_state(void) {
     // Setup
     // arduinoUnoInit();
@@ -71,6 +59,23 @@ void camera_state(void) {
     }
 }
 
-void settings(void){
+void settings_state(void) {
+    // TODO
+    PORTJ &= ~(1 << PORTJ0);
+    disp_str(1, 1, "Relay ON");
+    while (true) {
+        if (joystick_new_direction()) {
+            if (current == C) {
+                PORTJ ^= (1 << PORTJ0);
+                clrscr();
+                disp_str(1, 1, (PORTJ & (1 << PORTJ0)) ? "Relay OFF" : "Relay ON");
+            }
+        }
+    }
+}
 
+void reboot_state(void) {
+    wdt_enable(WDTO_15MS);
+    while (1)
+        ;
 }

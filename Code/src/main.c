@@ -11,30 +11,13 @@
 #include "capture.h"
 #include "joystick.h"
 #include "menu.h"
-#include "utilities.h"
 #include "states_functions.h"
+#include "utilities.h"
 
+volatile uint64_t curr_time_ms = 0;
 
 int main(void) {
-
-    // Set up timer 1 in normal mode
-    TCCR1A = 0x00;
-    TCCR1B = 0x00;
-
-    // Set the prescaler
-    TCCR1B |= (1 << CS11);
-
-    // Set the compare value
-    OCR1A = F_CPU / 8 / 1000;
-
-    // Enable CTC mode and timer 1 overflow interrupt
-    TCCR1B |= (1 << WGM12);
-    TIMSK1 |= (1 << OCIE1A);
-    sei();
-
-    DDRJ |= (1 << DDJ0);
-    PORTJ |= (1 << PORTJ0);
-    //arduinoUnoInit();
+    general_init();
     init_joystick();
     start_lcd();
     init_menu();
@@ -47,7 +30,7 @@ int main(void) {
             new_state = false;
             clrscr();
             switch (curr_state) {
-                case TEMP_HUM:
+                case SENSORS:
                     // disp_str(1, 1, "in TEMP_HUM");
                     sensors_state();
                     break;
@@ -55,9 +38,12 @@ int main(void) {
                     // disp_str(1, 1, "in CAMERA");
                     camera_state();
                     break;
-                case RELAY:
+                case SETTINGS:
                     // disp_str(1, 1, "in RELAY");
-                    relay_state();
+                    settings_state();
+                    break;
+                case REBOOT:
+                    reboot_state();
                     break;
 
                 default:
@@ -71,4 +57,5 @@ int main(void) {
 
 ISR(TIMER1_COMPA_vect) {
     // called every 1ms
+    ++curr_time_ms;
 }

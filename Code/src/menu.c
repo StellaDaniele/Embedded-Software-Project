@@ -10,10 +10,10 @@ void init_menu() {
     new_state = false;
     clrscr();
     disp_str(selection_x, selection_y, ">");
-    disp_str(2, 1, "TEMP_HUM");
+    disp_str(2, 1, "SENSORS");
     disp_str(2, 2, "CAMERA");
-    disp_str(13, 1, "RELAY");
-    // disp_str(13, 2, "FOURTH");
+    disp_str(13, 1, "SETTINGS");
+    disp_str(13, 2, "REBOOT");
 }
 
 void menu(enum joystick_dir current) {
@@ -47,13 +47,16 @@ void menu(enum joystick_dir current) {
             */
             if (selection_x == 1 && selection_y == 1) {
                 new_state = true;
-                curr_state = TEMP_HUM;
+                curr_state = SENSORS;
             } else if (selection_x == 1 && selection_y == 2) {
                 new_state = true;
                 curr_state = CAMERA;
             } else if (selection_x == 12 && selection_y == 1) {
                 new_state = true;
-                curr_state = RELAY;
+                curr_state = SETTINGS;
+            } else if (selection_x == 12 && selection_y == 2) {
+                new_state = true;
+                curr_state = REBOOT;
             }
             break;
         default:
