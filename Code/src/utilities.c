@@ -3,6 +3,7 @@
 #include <LCD_display.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <avr/wdt.h>  // watchdog timer
 #include <util/delay.h>
 
 void error_led(void) {
@@ -22,3 +23,9 @@ void error_led(err_number err) {
     error_led();
 }
 */
+
+void reset_board(void) {
+    wdt_enable(WDTO_15MS);
+    while (1)
+        ;
+}

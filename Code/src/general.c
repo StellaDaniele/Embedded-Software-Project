@@ -2,7 +2,6 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include <avr/wdt.h>  // watchdog timer
 #include <util/delay.h>
 
 void board_init(void) {
@@ -25,10 +24,4 @@ void board_init(void) {
     PORT_RELAY != (1 << RELAY);     // Set high (relay is low level trigger)
 
     sei();
-}
-
-void reset_board(void){
-    wdt_enable(WDTO_15MS);
-    while (1)
-        ;
 }

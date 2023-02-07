@@ -6,6 +6,5 @@
 #define RELAY PORTJ0
 
 void board_init(void);
-void reset_board(void);
 
 #endif

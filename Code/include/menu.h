@@ -3,11 +3,13 @@
 #include <stdbool.h>
 
 #include "joystick.h"
-enum states { MENU,
+typedef enum states { MENU,
               SENSORS,
               CAMERA,
               SETTINGS,
-              REBOOT } curr_state;
+              REBOOT } states;
+
+extern states curr_state;
 extern bool new_state;
 
 void init_menu();
