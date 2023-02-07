@@ -17,6 +17,16 @@ void error_led(void) {
 
 void error(error_type err, int additional_info) {
     cli();
+    PRR0 = 0xff;  // Disable peripherals in Power Reduction Register 0
+    PRR1 = 0xff;  // Disable peripherals in Power Reduction Register 1
+
+    start_lcd();
+    clrscr();
+    disp_str(1, 1, "Error code: ");
+    disp_num(1, 2, (int)err);
+    disp_str(1, 1, "Additional_info: ");
+    disp_num(1, 2, additional_info);
+    error_led();
     DDRB |= (1 << PORTB7);
     while (1) {
         PORTB ^= (1 << PORTB7);
