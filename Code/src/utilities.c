@@ -14,15 +14,22 @@ void error_led(void) {
         _delay_ms(100);
     }
 }
-/*
-void error_led(err_number err) {
+
+void error(error_type err, int additional_info) {
+    cli();
+    DDRB |= (1 << PORTB7);
+    while (1) {
+        PORTB ^= (1 << PORTB7);
+        _delay_ms(100);
+    }
+    /*
     cli();
     start_lcd();
     disp_str(1, 1, "Error code: ");
     disp_num(1, 2, err);
     error_led();
+    */
 }
-*/
 
 void reset_board(void) {
     wdt_enable(WDTO_15MS);

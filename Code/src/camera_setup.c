@@ -16,7 +16,7 @@ void twiStart() {
     TWCR = ((1 << TWINT) | (1 << TWSTA) | (1 << TWEN));  // send start
     WAIT_FOR_TRANSMISSION_TWI
     if ((TWSR & 0xF8) != TW_START)
-        error_led();
+        error(CAMERA_TWI_ERROR, 0);
 }
 
 void twiWriteByte(uint8_t DATA, uint8_t type) {
@@ -24,7 +24,7 @@ void twiWriteByte(uint8_t DATA, uint8_t type) {
     TWCR = (1 << TWINT) | (1 << TWEN);
     WAIT_FOR_TRANSMISSION_TWI
     if ((TWSR & 0xF8) != type)
-        error_led();
+        error(CAMERA_TWI_ERROR, 0);
 }
 
 void twiAddr(uint8_t addr, uint8_t typeTWI) {
@@ -32,7 +32,7 @@ void twiAddr(uint8_t addr, uint8_t typeTWI) {
     TWCR = (1 << TWINT) | (1 << TWEN); /* clear interrupt to start transmission */
     WAIT_FOR_TRANSMISSION_TWI
     if ((TWSR & 0xF8) != typeTWI)
-        error_led();
+        error(CAMERA_TWI_ERROR, 0);
 }
 
 void writeReg(uint8_t reg, uint8_t dat) {

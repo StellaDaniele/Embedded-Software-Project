@@ -10,11 +10,11 @@
 #include "LCD_display.h"
 #include "camera_setup.h"
 #include "capture.h"
+#include "general.h"
 #include "joystick.h"
 #include "menu.h"
 #include "states_functions.h"
 #include "utilities.h"
-#include "general.h"
 
 void sensors_state(void) {
     uint8_t temperature = 0;
@@ -22,10 +22,8 @@ void sensors_state(void) {
     int res;
     while (1) {
         res = read(&temperature, &humidity, NULL);
-        if (res) {
-            disp_num(1, 1, res);
-            error_led();
-        }
+        if (res)
+            error(DHT11_ERROR, res);
         // disp_str_num(1,1,"TEMP: ", (int)temperature);
         // disp_str_num(1,2,"HUMI: ", (int)humidity);
 
