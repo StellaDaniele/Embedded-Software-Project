@@ -2,14 +2,17 @@
 #define __JOYSTICK_H__
 
 #include <stdbool.h>
-enum joystick_dir { dir_nothing,
+typedef enum joystick_dir { dir_nothing,
                     U,
                     D,
                     R,
                     L,
-                    C } current;
+                    C } joystick_dir;
 
-extern volatile bool central_button_pressed_interrupt = false;
+
+
+extern joystick_dir current;
+extern volatile bool central_button_pressed_interrupt;
 
 void init_joystick();
 // returns true if new movement detected, sets "current" global variable to new movement

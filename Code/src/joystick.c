@@ -16,6 +16,7 @@
     CLEAR_MUX_ADC           \
     ADMUX |= (1 << MUX0);
 
+joystick_dir current;
 static int value_x = 0, value_y = 0;
 // static enum joystick_dir old = dir_nothing;
 static bool new_value = false, first = true;
@@ -130,6 +131,6 @@ void disable_central_button_interrupt(void) {
     PCMSK1 &= ~(1 << PCINT10);
 }
 
-ISR(PCINT10_vect) {
+ISR(__vector_PCINT10) {
     central_button_pressed_interrupt = true;
 }
