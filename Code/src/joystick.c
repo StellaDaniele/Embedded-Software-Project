@@ -19,6 +19,7 @@
 static int value_x = 0, value_y = 0;
 // static enum joystick_dir old = dir_nothing;
 static bool new_value = false, first = true;
+volatile bool central_button_pressed_interrupt = false;
 
 #define UP "U"
 #define DOWN "D"
@@ -33,7 +34,7 @@ void init_joystick() {
     sei();
     ADMUX |= (1 << REFS0);  // | (1 << ADLAR);  // AVCC, Left Adjust Result
     ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
-    DDRJ &= ~(1 << DDJ1);
+    DDRJ &= ~(1 << DDJ1);    // Central button
     PORTJ |= (1 << PORTJ1);  // pull-up resistor
 }
 
@@ -114,4 +115,21 @@ bool joystick_new_direction() {
         return true;
     }
     return false;
+}
+
+void enable_central_button_interrupt(void) {
+    // Enable pin change interrupt for PJ1
+    PCICR |= (1 << PCIE1);
+    PCMSK1 |= (1 << PCINT10);
+
+    // Enable global interrupts
+    sei();
+}
+
+void disable_central_button_interrupt(void) {
+    PCMSK1 &= ~(1 << PCINT10);
+}
+
+ISR(PCINT10_vect) {
+    central_button_pressed_interrupt = true;
 }
