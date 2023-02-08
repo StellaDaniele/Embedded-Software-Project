@@ -16,12 +16,15 @@
 #include "states_functions.h"
 #include "utilities.h"
 
+uint8_t threshold_tmp = 18;
+
 void sensors_state(void) {
     uint8_t temperature = 0;
     uint8_t humidity = 0;
     int res;
     bool old_ir_state = false;
     disp_str(1, 1, "TEMP: ");
+    disp_str(11, 1, "HEATER OFF");
     disp_str(1, 2, "HUMI: ");
     disp_str(1, 3, "MOVEMENT: NO");
     disp_str(1, 4, "Central btn to exit");
@@ -39,6 +42,14 @@ void sensors_state(void) {
             disp_str(9, 1, "C");
             disp_num(7, 2, (int)humidity);
             disp_str(9, 2, "%");
+
+            if (temperature < threshold_tmp) {
+                disp_str(18, 1, "ON ");
+                PORTJ &= ~(1 << PORTJ0);
+            } else {
+                disp_str(18, 1, "OFF");
+                PORTJ |= (1 << PORTJ0);
+            }
         }
         if (old_ir_state != ((PIN_PIR & (1 << PIR)) != 0)) {
             old_ir_state = ((PIN_PIR & (1 << PIR)) != 0);
@@ -78,16 +89,23 @@ void camera_state(void) {
 }
 
 void settings_state(void) {
-    // TODO
-    PORTJ &= ~(1 << PORTJ0);
-    disp_str(1, 1, "Relay ON");
+    disp_str(1, 1, "Set threshold:");
+    disp_str(1, 2, "Current value:");
+    disp_num(15, 2, threshold_tmp);
+    disp_str(1, 4, "Central btn to exit");
+    central_button_pressed_interrupt = false;
+    enable_encoder_interrupt();
+
     while (true) {
-        if (joystick_new_direction()) {
-            if (current == C) {
-                PORTJ ^= (1 << PORTJ0);
-                clrscr();
-                disp_str(1, 1, (PORTJ & (1 << PORTJ0)) ? "Relay OFF" : "Relay ON");
-            }
+        if (encoder_changed) {
+            encoder_changed = false;
+            threshold_tmp += encoder_position;
+            encoder_position = 0;
+            disp_num(15, 2, threshold_tmp);
+        }
+        if (central_button_pressed_interrupt) {
+            disable_encoder_interrupt();
+            return;
         }
     }
 }

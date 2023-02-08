@@ -10,6 +10,7 @@
         "interrupt.h": "c",
         "board_init.h": "c",
         "general.h": "c",
-        "delay.h": "c"
+        "delay.h": "c",
+        "utilities.h": "c"
     }
 }
