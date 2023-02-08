@@ -2,7 +2,10 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <stdint.h>
 #include <util/delay.h>
+
+volatile uint64_t curr_time_ms = 0;
 
 void board_init(void) {
     /*
@@ -21,7 +24,12 @@ void board_init(void) {
     // Setup pins
     // Relay
     DDR_RELAY |= (1 << DDR_RELAY);  // Set as output
-    PORT_RELAY != (1 << RELAY);     // Set high (relay is low level trigger)
+    PORT_RELAY |= (1 << RELAY);     // Set high (relay is low level trigger)
 
     sei();
+}
+
+ISR(TIMER1_COMPA_vect) {
+    // called every 1ms
+    ++curr_time_ms;
 }
