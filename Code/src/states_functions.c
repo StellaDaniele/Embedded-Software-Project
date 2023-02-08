@@ -38,8 +38,7 @@ void sensors_state(void) {
             disp_num(7, 2, (int)humidity);
             disp_str(9, 2, "%");
         }
-        if (central_button_pressed_interrupt) {
-            disable_central_button_interrupt();
+        if (central_button_pressed_interrupt) {;
             return;
         }
     }
@@ -66,7 +65,6 @@ void camera_state(void) {
         captureImg(320, 240);
         disp_num(14, 3, ++i);
         if (central_button_pressed_interrupt) {
-            disable_central_button_interrupt();
             return;
         }
     }

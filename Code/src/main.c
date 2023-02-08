@@ -49,6 +49,7 @@ int main(void) {
                     error(UNEXPECTED_STATE_ERROR, 0);
             }
             init_menu();
+            central_button_pressed_interrupt = false;
         }
     }
     return 0;
