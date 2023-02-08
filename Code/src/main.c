@@ -38,7 +38,7 @@ int main(void) {
                     camera_state();
                     break;
                 case SETTINGS:
-                    // disp_str(1, 1, "in RELAY");
+                    // disp_str(1, 1, "in SETTINGS");
                     settings_state();
                     break;
                 case REBOOT:

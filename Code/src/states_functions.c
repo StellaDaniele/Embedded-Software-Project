@@ -61,7 +61,7 @@ void camera_state(void) {
     // setClocl(5);
     setClocl(10);
     disp_str(1, 1, "Sending images on");
-    disp_str(1, 2, "UART 0...");
+    disp_str(1, 2, "UART0 ...");
     _delay_ms(100);
     int i = 0;
     disp_str_num(1, 3, "Images sent: ", i);
@@ -69,6 +69,7 @@ void camera_state(void) {
     central_button_pressed_interrupt = false;
     while (true) {
         captureImg(320, 240);
+        // captureImg(640, 240);
         disp_num(14, 3, ++i);
         if (central_button_pressed_interrupt) {
             return;
