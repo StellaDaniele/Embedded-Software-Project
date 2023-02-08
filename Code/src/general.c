@@ -1,3 +1,5 @@
+
+
 #include "general.h"
 
 #include <avr/interrupt.h>
@@ -5,7 +7,19 @@
 #include <stdint.h>
 #include <util/delay.h>
 
+#include "utilities.h"
+
+#define ENCODER_CLK_STATE ((PIN_ENCODER_CLK & (1 << ENCODER_CLK)) != 0)
+#define ENCODER_DT_STATE ((PIN_ENCODER_DT & (1 << ENCODER_DT)) != 0)
+
 volatile uint64_t curr_time_ms = 0;
+volatile int8_t encoder_position = 0;
+volatile bool encoder_sw_pressed_interrupt = false;
+volatile bool encoder_changed = false;
+// These two variables are the parameters used
+// for the encoder's debouncing
+volatile uint64_t lastDebounceTime = 0;
+volatile const uint64_t debounceDelay = 50;
 
 void board_init(void) {
     /*
@@ -27,10 +41,59 @@ void board_init(void) {
     PORT_RELAY |= (1 << RELAY);     // Set high (relay is low level trigger)
     // IR sensor
     DDR_PIR &= ~(1 << PIR);  // Set as intput
+    // Encoder
+    DDR_ENCODER_CLK &= ~(1 << ENCODER_CLK);
+    PORT_ENCODER_CLK |= (1 << ENCODER_CLK);  // pull-up resistor
+
+    DDR_ENCODER_DT &= ~(1 << ENCODER_DT);
+    PORT_ENCODER_DT |= (1 << ENCODER_DT);  // pull-up resistor
+
+    DDR_ENCODER_SW &= ~(1 << ENCODER_SW);
+    PORT_ENCODER_SW |= (1 << ENCODER_SW);  // pull-up resistor
+
     sei();
+}
+
+void enable_encoder_interrupt(void) {
+    PCICR |= (1 << PCIE2);
+    PCMSK2 |= (1 << PCINT16);
+    PCMSK2 |= (1 << PCINT17);
+    PCMSK2 |= (1 << PCINT18);
+    encoder_position = 0;
+}
+
+void disable_encoder_interrupt(void) {
+    PCICR &= ~(1 << PCIE2);
+    PCMSK2 &= ~(1 << PCINT16);
+    PCMSK2 &= ~(1 << PCINT17);
+    PCMSK2 &= ~(1 << PCINT18);
 }
 
 ISR(TIMER1_COMPA_vect) {
     // called every 1ms
     ++curr_time_ms;
+}
+
+ISR(PCINT2_vect) {
+    int encoderValue = ENCODER_CLK_STATE | (ENCODER_DT_STATE << 1);
+    if ((curr_time_ms - lastDebounceTime) > debounceDelay) {
+        switch (encoderValue) {
+            case 0b00:
+                break;
+            case 0b01:
+                encoder_position++;
+                encoder_changed = true;
+                break;
+            case 0b10:
+                encoder_position--;
+                encoder_changed = true;
+                break;
+            case 0b11:
+                break;
+        }
+        lastDebounceTime = curr_time_ms;
+    }
+    // if (!(PIN_ENCODER_SW & (1 << PINJ1)))
+    //     encoder_sw_pressed_interrupt = true;
+    PCIFR |= (1 << PCIF2);
 }
