@@ -24,8 +24,8 @@ void error(error_type err, int additional_info) {
     clrscr();
     disp_str(1, 1, "Error code: ");
     disp_num(1, 2, (int)err);
-    disp_str(1, 1, "Additional_info: ");
-    disp_num(1, 2, additional_info);
+    disp_str(1, 3, "Additional_info: ");
+    disp_num(1, 4, additional_info);
     error_led();
     DDRB |= (1 << PORTB7);
     while (1) {
@@ -42,6 +42,7 @@ void error(error_type err, int additional_info) {
 }
 
 void reset_board(void) {
+    cli();
     wdt_enable(WDTO_15MS);
     while (1)
         ;
