@@ -14,12 +14,11 @@
 #include "states_functions.h"
 #include "utilities.h"
 
-volatile uint64_t curr_time_ms = 0;
-
 int main(void) {
     board_init();
     init_joystick();
     start_lcd();
+    clrscr();
     init_menu();
 
     while (1) {
@@ -53,9 +52,4 @@ int main(void) {
         }
     }
     return 0;
-}
-
-ISR(TIMER1_COMPA_vect) {
-    // called every 1ms
-    ++curr_time_ms;
 }
