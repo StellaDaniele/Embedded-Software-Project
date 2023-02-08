@@ -28,9 +28,12 @@
 #define PORT_ENCODER_SW PORTK
 #define ENCODER_SW PINK3
 
+// Incremented each 1ms by timer1
 extern volatile uint64_t curr_time_ms;
-// This is the offset applied to the temperature threshold
+
+// Starts from 0, incremented by 1 when CW decremented by 1 when CCW
 extern volatile int8_t encoder_position;
+
 extern volatile bool encoder_sw_pressed_interrupt;
 extern volatile bool encoder_changed;
 

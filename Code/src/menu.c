@@ -2,6 +2,7 @@
 
 #include "LCD_display.h"
 #include "joystick.h"
+#include "utilities.h"
 
 states curr_state;
 bool new_state;
@@ -62,6 +63,7 @@ void menu(enum joystick_dir current) {
             }
             break;
         default:
+            error(UNEXPECTED_JOYSTICK_DIR_ERROR, 0);
             break;
     }
 }

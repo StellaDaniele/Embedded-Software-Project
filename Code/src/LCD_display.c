@@ -1,5 +1,6 @@
 #include "LCD_display.h"
-void display(unsigned char car, unsigned char stat);  // Displays a character on the display, first it writes the 4 bits
+// Displays a character on the display, first it writes the 4 bits
+void display(unsigned char car, unsigned char stat);
 void float_to_int(float number, char digits, int *integer_part, int *floating_part);
 int power(int base, int exponent);
 
@@ -136,24 +137,24 @@ void gotoxy(unsigned char x, unsigned char y) {
 }
 
 void disp_pos(unsigned char a, unsigned char b, unsigned int num) {
-    unsigned char i, zeri, cifre[6];
+    unsigned char i, zeros, digits[6];
     if (a != 0)
         gotoxy(a, b);
     for (i = 0; i < 5; i++) {  // Conversion from int to str
-        cifre[4 - i] = num % 10 + '0';
+        digits[4 - i] = num % 10 + '0';
         num = num / 10;
     }
-    cifre[5] = '\0';  // Null character after the 5 digits to terminate the string
-    zeri = 0;
+    digits[5] = '\0';  // Null character after the 5 digits to terminate the string
+    zeros = 0;
     for (i = 0; i < 4; i++) {  // Counting of zeros before the number
-        if (cifre[0] != '0') break;
-        if (cifre[i] == '0') zeri++;
-        if (cifre[i + 1] != '0') break;
+        if (digits[0] != '0') break;
+        if (digits[i] == '0') zeros++;
+        if (digits[i + 1] != '0') break;
     }
     for (i = 0; i < 5; i++)  // Moving the string to the left
-        cifre[i] = cifre[i + zeri];
-    for (i = 0; cifre[i] != 0; i++)
-        display(cifre[i], DATA);
+        digits[i] = digits[i + zeros];
+    for (i = 0; digits[i] != 0; i++)
+        display(digits[i], DATA);
     if (a != 0)
         display(' ', DATA);
 }

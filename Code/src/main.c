@@ -42,6 +42,7 @@ int main(void) {
                     settings_state();
                     break;
                 case REBOOT:
+                    // disp_str(1, 1, "in REBOOT");
                     reboot_state();
                     break;
 
@@ -49,7 +50,7 @@ int main(void) {
                     error(UNEXPECTED_STATE_ERROR, 0);
             }
             init_menu();
-            _delay_ms(1); // debouncing
+            _delay_ms(1);  // debouncing central joystick button
             central_button_pressed_interrupt = false;
         }
     }

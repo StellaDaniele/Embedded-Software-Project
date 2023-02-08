@@ -130,7 +130,6 @@ void enable_central_button_interrupt(void) {
     PCICR |= (1 << PCIE1);
     PCMSK1 |= (1 << PCINT10);
     central_button_pressed_interrupt = false;
-    // Enable global interrupts
     sei();
 }
 
@@ -142,5 +141,5 @@ void disable_central_button_interrupt(void) {
 ISR(PCINT1_vect) {
     if (!(PINJ & (1 << PINJ1)))
         central_button_pressed_interrupt = true;
-    PCIFR |= (1 << PCIF1);
+    PCIFR |= (1 << PCIF1);  // Reset interrupt flag
 }

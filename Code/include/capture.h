@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
-/*static*/ void captureImg(uint16_t, uint16_t);
+/*
+Captures the images of size wgXhg and
+transfers it over USART0
+*/
+void captureImg(uint16_t wg, uint16_t hg);
 
 #endif

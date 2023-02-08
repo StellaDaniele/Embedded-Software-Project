@@ -1,3 +1,9 @@
+/*
+This was written starting from the DHT11 datasheet
+and the Arduino C library. The error codes are the same
+so that it is easier to debug.
+*/
+
 #include "DHT11.h"
 
 #include <avr/io.h>
@@ -38,9 +44,9 @@ int sample(uint8_t data[40]) {
     memset(data, 0, 40);
 
     // notify DHT11 to start:
-    //    1. PULL LOW 20ms.
-    //    2. PULL HIGH 20-40us.
-    //    3. SET TO INPUT.
+    // PULL LOW 20ms.
+    // PULL HIGH 20-40us.
+    // SET TO INPUT.
     SET_OUTPUT_DHT
     SET_LOW_DHT
     _delay_ms(20);
@@ -49,17 +55,17 @@ int sample(uint8_t data[40]) {
     SET_INPUT_DHT
 
     // DHT11 starting:
-    //    1. PULL LOW 80us
-    //    2. PULL HIGH 80us
+    // PULL LOW 80us
+    // PULL HIGH 80us
     if (confirm(80, 0))
         return 100;
     if (confirm(80, 1))
         return 101;
 
     // DHT11 data transmite:
-    //    1. 1bit start, PULL LOW 50us
-    //    2. PULL HIGH 26-28us, bit(0)
-    //    3. PULL HIGH 70us, bit(1)
+    // 1bit start, PULL LOW 50us
+    // PULL HIGH 26-28us, bit(0)
+    // PULL HIGH 70us, bit(1)
     for (int j = 0; j < 40; j++) {
         if (confirm(50, 0))
             return 102;
@@ -81,7 +87,7 @@ int sample(uint8_t data[40]) {
     }
 
     // DHT11 EOF:
-    //    1. PULL LOW 50us.
+    // PULL LOW 50us.
     if (confirm(50, 0))
         return 104;
     return 0;

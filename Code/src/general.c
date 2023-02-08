@@ -56,9 +56,9 @@ void board_init(void) {
 
 void enable_encoder_interrupt(void) {
     PCICR |= (1 << PCIE2);
-    PCMSK2 |= (1 << PCINT16);
-    PCMSK2 |= (1 << PCINT17);
-    PCMSK2 |= (1 << PCINT18);
+    PCMSK2 |= (1 << PCINT16);  // CLK
+    PCMSK2 |= (1 << PCINT17);  // DT
+    PCMSK2 |= (1 << PCINT18);  // SW
     encoder_position = 0;
 }
 
@@ -75,9 +75,9 @@ ISR(TIMER1_COMPA_vect) {
 }
 
 ISR(PCINT2_vect) {
-    int encoderValue = ENCODER_CLK_STATE | (ENCODER_DT_STATE << 1);
+    int encoder_value = ENCODER_CLK_STATE | (ENCODER_DT_STATE << 1);
     if ((curr_time_ms - lastDebounceTime) > debounceDelay) {
-        switch (encoderValue) {
+        switch (encoder_value) {
             case 0b00:
                 break;
             case 0b01:
@@ -95,5 +95,5 @@ ISR(PCINT2_vect) {
     }
     if (!(PIN_ENCODER_SW & (1 << ENCODER_SW)))
         encoder_sw_pressed_interrupt = true;
-    PCIFR |= (1 << PCIF2);
+    PCIFR |= (1 << PCIF2); // Reset interrupt flag
 }

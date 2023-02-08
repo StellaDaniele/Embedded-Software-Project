@@ -30,8 +30,8 @@ void sensors_state(void) {
     disp_str(1, 4, "Central btn to exit");
     central_button_pressed_interrupt = false;
     while (1) {
+        // DHT11 sampling rate is 1HZ.
         if ((curr_time_ms % 1000) == 0) {
-            // DHT11 sampling rate is 1HZ.
             res = read(&temperature, &humidity, NULL);
             if (res)
                 error(DHT11_ERROR, res);
@@ -79,8 +79,8 @@ void camera_state(void) {
     disp_str(1, 4, "Central btn to exit");
     central_button_pressed_interrupt = false;
     while (true) {
+        // The camera module used supports up to 640X480
         captureImg(320, 240);
-        // captureImg(640, 240);
         disp_num(14, 3, ++i);
         if (central_button_pressed_interrupt) {
             return;
