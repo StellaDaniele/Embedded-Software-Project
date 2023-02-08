@@ -93,7 +93,7 @@ ISR(PCINT2_vect) {
         }
         lastDebounceTime = curr_time_ms;
     }
-    // if (!(PIN_ENCODER_SW & (1 << PINJ1)))
-    //     encoder_sw_pressed_interrupt = true;
+    if (!(PIN_ENCODER_SW & (1 << ENCODER_SW)))
+        encoder_sw_pressed_interrupt = true;
     PCIFR |= (1 << PCIF2);
 }

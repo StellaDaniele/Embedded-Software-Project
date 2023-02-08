@@ -16,7 +16,7 @@
 #include "states_functions.h"
 #include "utilities.h"
 
-uint8_t threshold_tmp = 18;
+uint8_t threshold_temp = 18;
 
 void sensors_state(void) {
     uint8_t temperature = 0;
@@ -43,7 +43,7 @@ void sensors_state(void) {
             disp_num(7, 2, (int)humidity);
             disp_str(9, 2, "%");
 
-            if (temperature < threshold_tmp) {
+            if (temperature < threshold_temp) {
                 disp_str(18, 1, "ON ");
                 PORTJ &= ~(1 << PORTJ0);
             } else {
@@ -91,17 +91,29 @@ void camera_state(void) {
 void settings_state(void) {
     disp_str(1, 1, "Set threshold:");
     disp_str(1, 2, "Current value:");
-    disp_num(15, 2, threshold_tmp);
+    disp_str(18, 2, "C");
+    disp_str(1, 3, "Enc btn to discard");
+    disp_num(15, 2, threshold_temp);
     disp_str(1, 4, "Central btn to exit");
     central_button_pressed_interrupt = false;
     enable_encoder_interrupt();
+    int old_threshold = threshold_temp;
 
     while (true) {
         if (encoder_changed) {
             encoder_changed = false;
-            threshold_tmp += encoder_position;
+            threshold_temp += encoder_position;
+            if (threshold_temp < MIN_THRESHOLD_TEMP)
+                threshold_temp = MIN_THRESHOLD_TEMP;
+            else if (threshold_temp >= MAX_THRESHOLD_TEMP)
+                threshold_temp = MAX_THRESHOLD_TEMP;
             encoder_position = 0;
-            disp_num(15, 2, threshold_tmp);
+            disp_num(15, 2, threshold_temp);
+        }
+        if (encoder_sw_pressed_interrupt) {
+            encoder_sw_pressed_interrupt = false;
+            threshold_temp = old_threshold;
+            disp_num(15, 2, threshold_temp);
         }
         if (central_button_pressed_interrupt) {
             disable_encoder_interrupt();

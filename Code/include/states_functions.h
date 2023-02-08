@@ -3,8 +3,10 @@
 
 #include <stdint.h>
 
+#define MIN_THRESHOLD_TEMP 6
+#define MAX_THRESHOLD_TEMP 30
 // Initial value is 18°C
-extern uint8_t threshold_tmp;
+extern uint8_t threshold_temp;
 
 void sensors_state(void);
 void camera_state(void);
