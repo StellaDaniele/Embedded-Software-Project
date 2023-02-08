@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "LCD_display.h"
+#include "utilities.h"
 
 #define CLEAR_MUX_ADC \
     ADMUX &= ~((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3) | (1 << MUX4));
@@ -32,11 +33,11 @@ volatile bool central_button_pressed_interrupt = false;
 
 void init_joystick() {
     // DDRF &= ~((1 << DDD0) | (1 << DDD1));
-    sei();
     ADMUX |= (1 << REFS0);  // | (1 << ADLAR);  // AVCC, Left Adjust Result
     ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
     DDRJ &= ~(1 << DDJ1);    // Central button
     PORTJ |= (1 << PORTJ1);  // pull-up resistor
+    enable_central_button_interrupt();
 }
 
 int read_ADC() {
@@ -69,8 +70,14 @@ enum joystick_dir disp_joystick_pos() {
             return L;
         }
     }
-    if (!(PINJ & (1 << PINJ1)))
+    // if (!(PINJ & (1 << PINJ1))){
+    //     return C;
+    // }
+
+    if (central_button_pressed_interrupt) {
+        central_button_pressed_interrupt = false;
         return C;
+    }
     return dir_nothing;
 }
 
@@ -122,15 +129,18 @@ void enable_central_button_interrupt(void) {
     // Enable pin change interrupt for PJ1
     PCICR |= (1 << PCIE1);
     PCMSK1 |= (1 << PCINT10);
-
+    central_button_pressed_interrupt = false;
     // Enable global interrupts
     sei();
 }
 
 void disable_central_button_interrupt(void) {
+    PCICR &= ~(1 << PCIE1);
     PCMSK1 &= ~(1 << PCINT10);
 }
 
-ISR(__vector_PCINT10) {
-    central_button_pressed_interrupt = true;
+ISR(PCINT1_vect) {
+    if (!(PINJ & (1 << PINJ1)))
+        central_button_pressed_interrupt = true;
+    PCIFR |= (1 << PCIF1);
 }
