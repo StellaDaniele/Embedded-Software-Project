@@ -24,7 +24,7 @@ void twiWriteByte(uint8_t DATA, uint8_t type) {
     TWCR = (1 << TWINT) | (1 << TWEN);
     WAIT_FOR_TRANSMISSION_TWI
     if ((TWSR & 0xF8) != type)
-        error(CAMERA_TWI_ERROR, 0);
+        error(CAMERA_TWI_ERROR, 1);
 }
 
 void twiAddr(uint8_t addr, uint8_t typeTWI) {
@@ -32,7 +32,7 @@ void twiAddr(uint8_t addr, uint8_t typeTWI) {
     TWCR = (1 << TWINT) | (1 << TWEN); /* clear interrupt to start transmission */
     WAIT_FOR_TRANSMISSION_TWI
     if ((TWSR & 0xF8) != typeTWI)
-        error(CAMERA_TWI_ERROR, 0);
+        error(CAMERA_TWI_ERROR, 2);
 }
 
 void writeReg(uint8_t reg, uint8_t dat) {
@@ -57,7 +57,7 @@ void wrSensorRegs8_8(const struct regval_list reglist[]) {
 }
 
 void camInit() {
-    cli();  // disable interrupts
+    //cli();  // disable interrupts
 
     // 8mhz PWM master clock
     DDRB |= (1 << PORTB4);  // pin 11 (clock output)
@@ -76,7 +76,7 @@ void camInit() {
               (1 << PORTD4) | (1 << PORTD5) |
               (1 << PORTD6) | (1 << PORTD7)*/
     );
-    //_delay_ms(3000);
+    _delay_ms(3000); // THIS IS NEEDED, DO NOT REMOVE
 
     // set up twi for 100khz
     // TWI = Two Wire Interface (I2C)
@@ -93,10 +93,12 @@ void camInit() {
     UCSR0B = (1 << RXEN0) | (1 << TXEN0);  // Enable receiver and transmitter
     // UCSR0C = 6;                            // async 1 stop bit 8bit char no parity bits
     UCSR0C = (1 << UCSZ00) | (1 << UCSZ01);
+
     writeReg(0x12, 0x80);
     _delay_ms(100);
     wrSensorRegs8_8(ov7670_default_regs);
     writeReg(REG_COM10, 32);  // PCLK does not toggle on HBLANK.
+    //sei();
 }
 
 void setResolution() {
