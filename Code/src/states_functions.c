@@ -20,8 +20,10 @@ void sensors_state(void) {
     uint8_t temperature = 0;
     uint8_t humidity = 0;
     int res;
+    bool old_ir_state = false;
     disp_str(1, 1, "TEMP: ");
     disp_str(1, 2, "HUMI: ");
+    disp_str(1, 3, "MOVEMENT: NO");
     disp_str(1, 4, "Central btn to exit");
     central_button_pressed_interrupt = false;
     while (1) {
@@ -38,7 +40,11 @@ void sensors_state(void) {
             disp_num(7, 2, (int)humidity);
             disp_str(9, 2, "%");
         }
-        if (central_button_pressed_interrupt) {;
+        if (old_ir_state != ((PIN_PIR & (1 << PIR)) != 0)) {
+            old_ir_state = ((PIN_PIR & (1 << PIR)) != 0);
+            disp_str(11, 3, ((PIN_PIR & (1 << PIR)) != 0) ? "YES" : "NO ");
+        }
+        if (central_button_pressed_interrupt) {
             return;
         }
     }

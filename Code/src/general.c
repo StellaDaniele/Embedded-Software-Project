@@ -25,7 +25,8 @@ void board_init(void) {
     // Relay
     DDR_RELAY |= (1 << DDR_RELAY);  // Set as output
     PORT_RELAY |= (1 << RELAY);     // Set high (relay is low level trigger)
-
+    // IR sensor
+    DDR_PIR &= ~(1 << PIR);  // Set as intput
     sei();
 }
 
