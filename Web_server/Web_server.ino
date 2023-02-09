@@ -18,7 +18,7 @@ char command[] = { '*', 'R', 'D', 'Y', '*' };
 WiFiServer server(80);
 volatile static int rgb;
 
-SoftwareSerial ser(2, 3);  // RX, TX
+SoftwareSerial ser(D1, D2);  // RX, TX
 
 void setup(void) {
   ESP.wdtEnable(16000);
@@ -51,11 +51,21 @@ void setup(void) {
 int t1, t2, t3;
 
 void loop(void) {
+  ESP.wdtFeed();
   WiFiClient client = server.available();
   if (client) {
     Serial.println("New client detected.");
     String currentLine = "";
     client.print("<!DOCTYPE html><html><style>table, th, td {border-collapse: collapse;} td {width: 1px; height: 1px;}</style><body>");
+    while (1) {
+      ESP.wdtFeed();
+      while (ser.available()){
+        int tmp = ser.read();
+        client.println(tmp);
+      }
+      
+    }
+    /*
     while (1) {
       ESP.wdtFeed();
       int i = 0;
@@ -104,7 +114,7 @@ void loop(void) {
         }
       }
     }
-
+*/
     /*
     client.print("<table style=\"width: 320px; height: 240px\">");
     //int buffer = 0;
