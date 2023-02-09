@@ -1,3 +1,9 @@
+/*
+I am using a LOLIN(WEMSO) D1 mini (clone).
+So it should be equivalent with a D1 mini lite (based on the ESP8266)
+This code works also with the ESP8266.
+*/
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
