@@ -2,18 +2,27 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include <SoftwareSerial.h>
+
+#include "ssid_password.hpp"
 
 #define WIDTH 320
 #define HEIGHT 240
 
-const char* ssid = "Dan's Hotspot";
-const char* password = "ciaociao5";
+const char* ssid = SSID;
+const char* password = PASSWORD;
 const int led = D1;
+
+char command[] = { '*', 'R', 'D', 'Y', '*' };
 
 WiFiServer server(80);
 volatile static int rgb;
 
+SoftwareSerial ser(2, 3);  // RX, TX
+
 void setup(void) {
+  ESP.wdtEnable(16000);
+  ESP.wdtDisable();
   // pinMode(led, OUTPUT);
   // digitalWrite(led, 0);
   Serial.begin(115200);
@@ -22,6 +31,7 @@ void setup(void) {
 
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
+    ESP.wdtFeed();
     delay(500);
     Serial.print(".");
   }
@@ -34,6 +44,8 @@ void setup(void) {
 
   server.begin();
   Serial.println("HTTP server started");
+
+  ser.begin(1000000);
 }
 
 int t1, t2, t3;
@@ -43,7 +55,56 @@ void loop(void) {
   if (client) {
     Serial.println("New client detected.");
     String currentLine = "";
-    client.print("<!DOCTYPE html><html><style>table, th, td {border-collapse: collapse;} td {width: 1px; height: 1px;}</style><body>it is working");
+    client.print("<!DOCTYPE html><html><style>table, th, td {border-collapse: collapse;} td {width: 1px; height: 1px;}</style><body>");
+    while (1) {
+      ESP.wdtFeed();
+      int i = 0;
+      while (true) {
+        ESP.wdtFeed();
+        // Wait until we receive *RDY*, which marks the start
+        // of an image
+        int valid = false;
+        i = 0;
+
+        while (true) {
+          ESP.wdtFeed();
+          if (ser.available()) {
+            char cc = (char)ser.read();
+
+            if (command[i] == cc) {
+              i++;
+            } else {
+              i = 0;
+            }
+            if (i >= sizeof(command)) {
+              break;
+            }
+          }
+        }
+
+        // Clear read buffer
+        while (ser.available()) {
+          ESP.wdtFeed();
+          ser.read();
+        }
+
+        int tmp = 0;
+
+        // Read the image - just a list of bytes, column by column
+        // Each byte represents the brightness 0 - 255
+
+        for (int y = 0; y < HEIGHT; y++) {
+          for (int x = 0; x < WIDTH; x++) {
+            tmp = (int)ser.read();
+            int r = tmp & 0xFF;
+            int g = tmp & 0xFF;
+            int b = tmp & 0xFF;
+            client.println(r);
+          }
+        }
+      }
+    }
+
     /*
     client.print("<table style=\"width: 320px; height: 240px\">");
     //int buffer = 0;
