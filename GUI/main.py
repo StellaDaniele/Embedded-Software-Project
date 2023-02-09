@@ -1,3 +1,7 @@
+# This is not really efficient, and surely not the
+# best way to do this. It was the fastest way to do it
+# and 
+
 import pygame
 import serial
 import threading
@@ -5,35 +9,27 @@ import time
 
 # Change "COM1" and the BAUD rate as needed
 ser = serial.Serial("COM4", 1000000,
-                    serial.EIGHTBITS, serial.PARITY_NONE, serial.STOPBITS_ONE,
-                    timeout=None)
+                    serial.EIGHTBITS, serial.PARITY_NONE, serial.STOPBITS_ONE,timeout=None)
 
 pygame.init()
 
 command = ['*', 'R', 'D', 'Y', '*']
 
-# These may be actually flipped, so width is really the height and vice versa
 WIDTH = 320
 HEIGHT = 240
-
-#WIDTH = 640
-#HEIGHT = 480
 
 # Store image output
 rgb = [[0 for _ in range(2 * WIDTH)] for _ in range(2 * HEIGHT)]
 
 try:
-
     while True:
         # Wait until we receive *RDY*, which marks the start
         # of an image
-        # -----------------------------
         valid = False
         print("Waiting for image...")
         i = 0
 
         while True:
-            # Try to decode - our command is all UTF-8 chars
             try:
                 cc = ser.read().decode("utf-8")
             except (KeyboardInterrupt, SystemExit):
@@ -53,6 +49,7 @@ try:
 
         #window = pygame.display.set_mode((2 * WIDTH, 2 * HEIGHT))
         window = pygame.display.set_mode((WIDTH, HEIGHT))
+        
         #pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         window.fill(0)
 
