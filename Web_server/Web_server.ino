@@ -59,6 +59,7 @@ void loop(void) {
     Serial.println("New client detected.");
 #endif
     String buffer = "";
+    buffer.reserve(20000);
     client.print("<!DOCTYPE html><html><head><title>IOT_webserver</title> \
       <meta name='viewport' content='width=device-width, initial-scale=1.0'>\
       </head><body><canvas id='myCanvas' width='320' height='240'></canvas>");
@@ -76,9 +77,9 @@ void loop(void) {
           continue;
         if (y < HEIGHT) {
           if (x < WIDTH) {
-            int rgb = tmp & 0xFF;
-            buffer.concat(rgb);
-
+            // int rgb = tmp & 0xFF;
+            // buffer.concat(rgb);
+            buffer.concat(tmp & 0xFF);
             buffer.concat(',');
             x++;
           } else {
