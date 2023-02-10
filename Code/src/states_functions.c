@@ -27,7 +27,7 @@ void sensors_state(void) {
     disp_str(11, 1, "HEATER OFF");
     disp_str(1, 2, "HUMI: ");
     disp_str(1, 3, "MOVEMENT: NO");
-    disp_str(1, 4, "Central btn to exit");
+    disp_str(1, 4, "CENTRAL BTN TO EXIT");
     central_button_pressed_interrupt = false;
     while (1) {
         // DHT11 sampling rate is 1HZ.
@@ -64,19 +64,19 @@ void sensors_state(void) {
 void camera_state(void) {
     // Setup
     // arduinoUnoInit();
-    disp_str(1, 1, "Initializing");
-    disp_str(1, 2, "camera...");
+    disp_str(1, 1, "INITIALIZING");
+    disp_str(1, 2, "CAMERA...");
     camInit();
     setResolution();
     setColor();
     // setClocl(5);
     setClocl(10);
-    disp_str(1, 1, "Sending images on");
+    disp_str(1, 1, "SENDING IMAGES ON");
     disp_str(1, 2, "UART0 ...");
     _delay_ms(100);
     int i = 0;
-    disp_str_num(1, 3, "Images sent: ", i);
-    disp_str(1, 4, "Central btn to exit");
+    disp_str_num(1, 3, "IMAGES SENT: ", i);
+    disp_str(1, 4, "CENTRAL BTN TO EXIT");
     central_button_pressed_interrupt = false;
     while (true) {
         // The camera module used supports up to 640X480
@@ -89,12 +89,12 @@ void camera_state(void) {
 }
 
 void settings_state(void) {
-    disp_str(1, 1, "Set threshold:");
-    disp_str(1, 2, "Current value:");
+    disp_str(1, 1, "SET THRESHOLD:");
+    disp_str(1, 2, "CURRENT VALUE:");
     disp_str(18, 2, "C");
-    disp_str(1, 3, "Enc btn to discard");
+    disp_str(1, 3, "ENC BTN TO DISCARD");
     disp_num(15, 2, threshold_temp);
-    disp_str(1, 4, "Central btn to exit");
+    disp_str(1, 4, "CENTRAL BTN TO EXIT");
     central_button_pressed_interrupt = false;
     enable_encoder_interrupt();
     int old_threshold = threshold_temp;
