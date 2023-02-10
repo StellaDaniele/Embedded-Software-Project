@@ -7,8 +7,6 @@ This code works also with the ESP8266.
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-#include <stdlib.h>
 
 #include "ssid_password.hpp"
 
@@ -17,16 +15,11 @@ This code works also with the ESP8266.
 
 const char* ssid = SSID;
 const char* password = PASSWORD;
-const int led = D1;
-char* bf;
-char* rgb_buf;
 
 const char command[] = { '*', 'R', 'D', 'Y', '*' };
 WiFiServer server(80);
 
 void setup(void) {
-  bf = new char[10];
-  rgb_buf = new char[10];
   ESP.wdtEnable(16000);
   // ESP.wdtDisable();
 
@@ -72,8 +65,7 @@ void loop(void) {
     int i = 0;
     int x = 0;
     int y = 0;
-    // client.print("<tr>");
-    client.print("<script>var brightnessValues=[");
+    buffer.concat("<script>var brightnessValues=[");
     while (1) {
       ESP.wdtFeed();
       while (Serial.available()) {
@@ -115,6 +107,7 @@ void loop(void) {
                     "ctx.putImageData(imageData, 0, 0);";
           buffer += "</script></body></html>";
           client.print(buffer);
+          client.flush();
           client.stop();
         }
       }
