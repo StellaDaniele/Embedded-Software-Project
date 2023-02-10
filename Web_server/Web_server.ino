@@ -68,42 +68,54 @@ void loop(void) {
     String buffer = "";
     client.print("<!DOCTYPE html><html><head><title>IOT_webserver</title> \
       <meta name='viewport' content='width=device-width, initial-scale=1.0'>\
-      <style>table, th, td {border-collapse: collapse;} td {width: 1px; height: 1px;}\
-      </style></head><body><table style=\"width: 320px; height: 240px\">");
+      </head><body><canvas id='myCanvas' width='320' height='240'></canvas>");
     int i = 0;
     int x = 0;
     int y = 0;
-    client.print("<tr>");
+    // client.print("<tr>");
+    client.print("<script>var brightnessValues=[");
     while (1) {
       ESP.wdtFeed();
       while (Serial.available()) {
         ESP.wdtFeed();
         int tmp = Serial.read();
-        // client.print(tmp);
-        // client.print(" ");
         i++;
-        if (i < 5)
+        if (i <= 5)
           continue;
         if (y < HEIGHT) {
           if (x < WIDTH) {
             int rgb = tmp & 0xFF;
-            rgb_buf = itoa(rgb, bf, 10);
-            //client.println(r);
-            buffer += "<td style=\"background-color:rgb(";
-            buffer += rgb_buf;
-            buffer += ",";
-            buffer += rgb_buf;
-            buffer += ",";
-            buffer += rgb_buf;
-            buffer += ")\"></td>";
-            client.print(buffer);
-            buffer = "";
+            buffer.concat(rgb);
+
+            buffer.concat(',');
             x++;
           } else {
+            if (x == WIDTH && y == HEIGHT - 1)
+              buffer.remove(buffer.length() - 1);
+            client.print(buffer);
+            buffer = "";
             x = 0;
             y++;
-            client.print("</tr>");
           }
+        }
+        if (y == HEIGHT) {
+          buffer = "";
+          buffer += "];";
+          buffer += "var canvas = document.getElementById('myCanvas');"
+                    "var ctx = canvas.getContext('2d');"
+                    "var imageData = ctx.createImageData(320, 240);"
+                    "for (var i = 0; i < brightnessValues.length; i++) {"
+                    "var brightness = brightnessValues[i];"
+                    "var index = i * 4;"
+                    "imageData.data[index] = brightness;"
+                    "imageData.data[index + 1] = brightness;"
+                    "imageData.data[index + 2] = brightness;"
+                    "imageData.data[index + 3] = 255;"
+                    "}"
+                    "ctx.putImageData(imageData, 0, 0);";
+          buffer += "</script></body></html>";
+          client.print(buffer);
+          client.stop();
         }
       }
     }
