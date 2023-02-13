@@ -67,14 +67,29 @@ void loop(void) {
     int x = 0;
     int y = 0;
     buffer.concat("<script>var brightnessValues=[");
+    while (true) {  // Wait for a new image
+      ESP.wdtFeed();
+      if (Serial.available()) {
+        char cc = (char)Serial.read();
+
+        if (command[i] == cc) {
+          i++;
+        } else {
+          i = 0;
+        }
+        if (i >= sizeof(command)) {
+          break;
+        }
+      }
+    }
     while (1) {
       ESP.wdtFeed();
       while (Serial.available()) {
         ESP.wdtFeed();
-        int tmp = Serial.read();
-        i++;
-        if (i <= 5)
-          continue;
+        char tmp = (char)Serial.read();
+        // i++;
+        // if (i <= 5)
+        //   continue;
         if (y < HEIGHT) {
           if (x < WIDTH) {
             // int rgb = tmp & 0xFF;
