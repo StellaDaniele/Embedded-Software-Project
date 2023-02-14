@@ -31,7 +31,7 @@ const char* html = R"===(
 
             // Use the data received
             //console.log(brightness)
-            brightnessArray.set(brightness, i * width * 2);
+            brightnessArray.set(brightness, i * width * 5);
             i++;
         }
 

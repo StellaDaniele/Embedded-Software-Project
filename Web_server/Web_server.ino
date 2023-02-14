@@ -13,7 +13,7 @@ This code works also with the ESP8266.
 
 #define WIDTH 320
 #define HEIGHT 240
-#define BRIGHTNESS_BUFFER_SIZE (320 * 2)
+#define BRIGHTNESS_BUFFER_SIZE (320 * 10)
 
 #define DEBUG
 
@@ -62,8 +62,12 @@ void setup(void) {
 
 
 bool new_image = true;
-uint8_t brightness_buffer[BRIGHTNESS_BUFFER_SIZE];
+const int bufferSize = BRIGHTNESS_BUFFER_SIZE;
+uint8_t brightness_buffer_1[BRIGHTNESS_BUFFER_SIZE];
+uint8_t brightness_buffer_2[BRIGHTNESS_BUFFER_SIZE];
+bool use_buffer_1 = true;
 int pixels = 0;
+
 void loop(void) {
   server.handleClient();
   webSocket.loop();
@@ -73,10 +77,20 @@ void loop(void) {
       new_image = false;
       find_new_image();
     } else {
-      brightness_buffer[pixels % BRIGHTNESS_BUFFER_SIZE] = Serial.read();
-      ++pixels;
-      if (pixels % BRIGHTNESS_BUFFER_SIZE == 0) {
-        webSocket.broadcastBIN(brightness_buffer, BRIGHTNESS_BUFFER_SIZE);
+      if (use_buffer_1) {
+        brightness_buffer_1[pixels % BRIGHTNESS_BUFFER_SIZE] = (uint8_t)Serial.read();
+        ++pixels;
+        if (pixels % BRIGHTNESS_BUFFER_SIZE == 0) {
+          webSocket.broadcastBIN(brightness_buffer_1, BRIGHTNESS_BUFFER_SIZE);
+          use_buffer_1 = false;
+        }
+      } else {
+        brightness_buffer_2[pixels % BRIGHTNESS_BUFFER_SIZE] = (uint8_t)Serial.read();
+        ++pixels;
+        if (pixels % BRIGHTNESS_BUFFER_SIZE == 0) {
+          webSocket.broadcastBIN(brightness_buffer_2, BRIGHTNESS_BUFFER_SIZE);
+          use_buffer_1 = true;
+        }
       }
     }
   }
