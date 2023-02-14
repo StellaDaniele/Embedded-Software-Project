@@ -59,7 +59,11 @@ void loop(void) {
     Serial.println("New client detected.");
 #endif
     String buffer = "";
-    buffer.reserve(20000);
+    int res1 = buffer.reserve(20000);
+    buffer.concat(res1);
+    String buffer1 = "";
+    res1 = buffer1.reserve(20000);
+    buffer.concat(res1);
     client.print("<!DOCTYPE html><html><head><title>IOT_webserver</title> \
       <meta name='viewport' content='width=device-width, initial-scale=1.0'>\
       </head><body><canvas id='myCanvas' width='320' height='240'></canvas>");
@@ -82,32 +86,22 @@ void loop(void) {
         }
       }
     }
+    i = 0;  // now counts pixels
     while (1) {
       ESP.wdtFeed();
       while (Serial.available()) {
         ESP.wdtFeed();
         char tmp = (char)Serial.read();
-        // i++;
-        // if (i <= 5)
-        //   continue;
-        if (y < HEIGHT) {
-          if (x < WIDTH) {
-            // int rgb = tmp & 0xFF;
-            // buffer.concat(rgb);
-            buffer.concat(tmp & 0xFF);
-            buffer.concat(',');
-            x++;
-          } else {
-            if (x == WIDTH && y == HEIGHT - 1)
-              buffer.remove(buffer.length() - 1);
-            client.print(buffer);
-            buffer = "";
-            x = 0;
-            y++;
-          }
-        }
-        if (y == HEIGHT) {
+        buffer.concat(tmp & 0xFF);
+        ++i;
+
+        if (i % WIDTH == 0) {
+          client.print(buffer);
           buffer = "";
+        }
+        if (i != 76800)
+          buffer.concat(',');
+        else {
           buffer += "];";
           buffer += "var canvas = document.getElementById('myCanvas');"
                     "var ctx = canvas.getContext('2d');"
