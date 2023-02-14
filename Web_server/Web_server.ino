@@ -91,6 +91,10 @@ void loop(void) {
         webSocket.broadcastBIN(current_buffer, bufferSize);
         use_buffer_1 = !use_buffer_1;
         pixels_in_buffer = 0;
+        if (pixels == HEIGHT * WIDTH) {
+          new_image = true;
+          pixels = 0;
+        }
       }
     }
   }
