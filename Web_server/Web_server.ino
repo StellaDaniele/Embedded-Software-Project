@@ -13,6 +13,8 @@ This code works also with the ESP8266.
 
 #define WIDTH 320
 #define HEIGHT 240
+#define BRIGHTNESS_BUFFER_SIZE (320 * 2)
+
 #define DEBUG
 
 const char* ssid = SSID;
@@ -58,10 +60,10 @@ void setup(void) {
 #endif
 }
 
-uint8_t brightness;
-uint8_t* pbrightness = &brightness;
-bool new_image = true;
 
+bool new_image = true;
+uint8_t brightness_buffer[BRIGHTNESS_BUFFER_SIZE];
+int pixels = 0;
 void loop(void) {
   server.handleClient();
   webSocket.loop();
@@ -71,8 +73,11 @@ void loop(void) {
       new_image = false;
       find_new_image();
     } else {
-      *pbrightness = Serial.read();
-      webSocket.broadcastBIN(pbrightness, 1);
+      brightness_buffer[pixels % BRIGHTNESS_BUFFER_SIZE] = Serial.read();
+      ++pixels;
+      if (pixels % BRIGHTNESS_BUFFER_SIZE == 0) {
+        webSocket.broadcastBIN(brightness_buffer, BRIGHTNESS_BUFFER_SIZE);
+      }
     }
   }
 }
@@ -88,12 +93,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
 #ifdef DEBUG
   switch (type) {
     case WStype_DISCONNECTED:
-      Serial.printf("[%u] Disconnected!\n", num);
+      Serial.printf("[%u] Disconnected from socket\n", num);
       break;
     case WStype_CONNECTED:
       {
         IPAddress ip = webSocket.remoteIP(num);
-        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+        Serial.printf("[%u] Connected to socket from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
       }
       break;
     case WStype_BIN:

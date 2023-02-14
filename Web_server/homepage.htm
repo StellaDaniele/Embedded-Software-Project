@@ -5,24 +5,30 @@
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">
     <title>IOT_webserver</title>
     <script>
-        const socket = new WebSocket('ws://192.168.12.4:81')
+        const width = 320;
+        const height = 240;
+        let brightnessArray = new Uint8Array(width * height);
+        let i = 0;
+        const socket = new WebSocket('ws://192.168.12.3:81');
 
-        socket.binaryType = 'arraybuffer'
+        socket.binaryType = 'arraybuffer';
 
         socket.onopen = function (event) {
-            console.log('WebSocket connected')
+            console.log('WebSocket connected');
         }
 
         socket.onmessage = function (event) {
             // The data received from the WebSocket is stored in the "data" property of the event object
-            const brightness = new Uint8Array(event.data)
+            const brightness = new Uint8Array(event.data);
 
             // Use the data received
-            console.log(brightness)
+            //console.log(brightness)
+            brightnessArray.set(brightness, i * width * 2);
+            i++;
         }
 
         socket.onclose = function (event) {
-            console.log('WebSocket closed')
+            console.log('WebSocket closed');
         }
 
     </script>
