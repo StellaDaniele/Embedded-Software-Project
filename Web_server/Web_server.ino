@@ -13,7 +13,7 @@ This code works also with the ESP8266.
 
 #define WIDTH 320
 #define HEIGHT 240
-#define BRIGHTNESS_BUFFER_SIZE (320 * 10)
+#define BRIGHTNESS_BUFFER_SIZE (320 * 60)
 
 #define DEBUG
 
@@ -62,11 +62,14 @@ void setup(void) {
 
 
 bool new_image = true;
+bool use_buffer_1 = true;
 const int bufferSize = BRIGHTNESS_BUFFER_SIZE;
 uint8_t brightness_buffer_1[BRIGHTNESS_BUFFER_SIZE];
 uint8_t brightness_buffer_2[BRIGHTNESS_BUFFER_SIZE];
-bool use_buffer_1 = true;
+uint8_t* current_buffer;
+uint8_t* next_buffer;
 int pixels = 0;
+int pixels_in_buffer = 0;
 
 void loop(void) {
   server.handleClient();
@@ -77,20 +80,17 @@ void loop(void) {
       new_image = false;
       find_new_image();
     } else {
-      if (use_buffer_1) {
-        brightness_buffer_1[pixels % BRIGHTNESS_BUFFER_SIZE] = (uint8_t)Serial.read();
-        ++pixels;
-        if (pixels % BRIGHTNESS_BUFFER_SIZE == 0) {
-          webSocket.broadcastBIN(brightness_buffer_1, BRIGHTNESS_BUFFER_SIZE);
-          use_buffer_1 = false;
-        }
-      } else {
-        brightness_buffer_2[pixels % BRIGHTNESS_BUFFER_SIZE] = (uint8_t)Serial.read();
-        ++pixels;
-        if (pixels % BRIGHTNESS_BUFFER_SIZE == 0) {
-          webSocket.broadcastBIN(brightness_buffer_2, BRIGHTNESS_BUFFER_SIZE);
-          use_buffer_1 = true;
-        }
+      if (pixels_in_buffer == 0) {
+        current_buffer = (use_buffer_1) ? brightness_buffer_1 : brightness_buffer_2;
+        next_buffer = (use_buffer_1) ? brightness_buffer_2 : brightness_buffer_1;
+      }
+      current_buffer[pixels_in_buffer] = (uint8_t)Serial.read();
+      ++pixels_in_buffer;
+      ++pixels;
+      if (pixels_in_buffer == bufferSize) {
+        webSocket.broadcastBIN(current_buffer, bufferSize);
+        use_buffer_1 = !use_buffer_1;
+        pixels_in_buffer = 0;
       }
     }
   }
@@ -123,7 +123,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
 #endif
 }
 
-void find_new_image() {
+inline __attribute__((always_inline)) void find_new_image() {
   int i = 0;
   while (true) {
     ESP.wdtFeed();
