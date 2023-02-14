@@ -16,6 +16,14 @@ This code works also with the ESP8266.
 const char* ssid = SSID;
 const char* password = PASSWORD;
 
+#define BUFSIZE 19200
+// 19200 = 76800/4 (easier buffers management)
+char buf1[BUFSIZE];
+char buf2[BUFSIZE];
+
+char* pWriteBuf = buf1;
+char* pSendBuf = buf2;
+
 const char command[] = { '*', 'R', 'D', 'Y', '*' };
 WiFiServer server(80);
 
@@ -58,19 +66,10 @@ void loop(void) {
 #ifdef DEBUG
     Serial.println("New client detected.");
 #endif
-    String buffer = "";
-    int res1 = buffer.reserve(20000);
-    buffer.concat(res1);
-    String buffer1 = "";
-    res1 = buffer1.reserve(20000);
-    buffer.concat(res1);
     client.print("<!DOCTYPE html><html><head><title>IOT_webserver</title> \
       <meta name='viewport' content='width=device-width, initial-scale=1.0'>\
-      </head><body><canvas id='myCanvas' width='320' height='240'></canvas>");
+      </head><body><canvas id='myCanvas' width='320' height='240'></canvas><script>var brightnessValues=[");
     int i = 0;
-    int x = 0;
-    int y = 0;
-    buffer.concat("<script>var brightnessValues=[");
     while (true) {  // Wait for a new image
       ESP.wdtFeed();
       if (Serial.available()) {
@@ -91,32 +90,37 @@ void loop(void) {
       ESP.wdtFeed();
       while (Serial.available()) {
         ESP.wdtFeed();
-        char tmp = (char)Serial.read();
-        buffer.concat(tmp & 0xFF);
+        if (pWriteBuf - buf1 + BUFSIZE > pSendBuf - buf2) {
+          // switch buffers
+          char* tmp = pWriteBuf;
+          pWriteBuf = pSendBuf;
+          pSendBuf = tmp;
+        }
+
+        *pWriteBuf++ = ((char)Serial.read()) & 0xFF;
+        *pWriteBuf++ = ',';
+
+        if (pWriteBuf - buf1 == BUFSIZE) {
+          client.write((uint8_t*)pSendBuf, BUFSIZE);
+          pWriteBuf = buf1;
+        }
         ++i;
 
-        if (i % WIDTH == 0) {
-          client.print(buffer);
-          buffer = "";
-        }
-        if (i != 76800)
-          buffer.concat(',');
-        else {
-          buffer += "];";
-          buffer += "var canvas = document.getElementById('myCanvas');"
-                    "var ctx = canvas.getContext('2d');"
-                    "var imageData = ctx.createImageData(320, 240);"
-                    "for (var i = 0; i < brightnessValues.length; i++) {"
-                    "var brightness = brightnessValues[i];"
-                    "var index = i * 4;"
-                    "imageData.data[index] = brightness;"
-                    "imageData.data[index + 1] = brightness;"
-                    "imageData.data[index + 2] = brightness;"
-                    "imageData.data[index + 3] = 255;"
-                    "}"
-                    "ctx.putImageData(imageData, 0, 0);";
-          buffer += "</script></body></html>";
-          client.print(buffer);
+        if (i == 76800) {
+          client.print("];"
+                       "var canvas = document.getElementById('myCanvas');"
+                       "var ctx = canvas.getContext('2d');"
+                       "var imageData = ctx.createImageData(320, 240);"
+                       "for (var i = 0; i < brightnessValues.length; i++) {"
+                       "var brightness = brightnessValues[i];"
+                       "var index = i * 4;"
+                       "imageData.data[index] = brightness;"
+                       "imageData.data[index + 1] = brightness;"
+                       "imageData.data[index + 2] = brightness;"
+                       "imageData.data[index + 3] = 255;"
+                       "}"
+                       "ctx.putImageData(imageData, 0, 0);"
+                       "</script></body></html>");
           client.flush();
           client.stop();
         }
