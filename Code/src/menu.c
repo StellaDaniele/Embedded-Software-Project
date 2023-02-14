@@ -22,7 +22,7 @@ void init_menu() {
 void menu(enum joystick_dir current) {
     switch (current) {
         case D:
-            if (selection_y + 1 > 4) break;
+            if (selection_y + 1 > 2) break;  // Change if new states are added
             disp_str(selection_x, selection_y, " ");
             disp_str(selection_x, ++selection_y, ">");
             break;

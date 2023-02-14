@@ -2,6 +2,7 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <util/twi.h>
 
@@ -13,7 +14,8 @@
         ;
 
 void twiStart() {
-    TWCR = ((1 << TWINT) | (1 << TWSTA) | (1 << TWEN));  // send start
+    // send start
+    TWCR = ((1 << TWINT) | (1 << TWSTA) | (1 << TWEN));
     WAIT_FOR_TRANSMISSION_TWI
     if ((TWSR & 0xF8) != TW_START)
         error(CAMERA_TWI_ERROR, 0);
@@ -61,10 +63,13 @@ void wrSensorRegs8_8(const struct regval_list reglist[]) {
 void camInit() {
     // 8mhz PWM master clock
     DDRB |= (1 << PORTB4);  // pin 11 (clock output)
+    // Disable external clock input and asynchronous operation
     ASSR &= ~((1 << EXCLK) | (1 << AS2));
+    // Fast PWM non-inverted out on OC2A and TOP=0xFF
     TCCR2A = (1 << COM2A0) | (1 << WGM21) | (1 << WGM20);
+    // CLK no prescaling, Mode 7 TOP=0xFF
     TCCR2B = (1 << WGM22) | (1 << CS20);
-    OCR2A = 2;  //(F_CPU)/(2*(X+1)) previous values: 0
+    OCR2A = 2;  //(F_CPU)/(2*(X+1))
 
     DDRC = 0;  // all data bits connected to the ddrc
 
@@ -85,11 +90,15 @@ void camInit() {
     // TWBR = (1 << TWBR3) | (1 << TWBR6);
 
     // Enable serial
+    // 1M baud rate
     UBRR0H = 0;
-    UBRR0L = 1;                              // 1M baud rate
-    UCSR0A |= (1 << U2X0);                   // double speed aysnc
-    UCSR0B = (1 << RXEN0) | (1 << TXEN0);    // Enable receiver and transmitter
-    UCSR0C = (1 << UCSZ00) | (1 << UCSZ01);  // async 1 stop bit 8bit char no parity bits
+    UBRR0L = 1;
+    // double speed aysnc
+    UCSR0A |= (1 << U2X0);
+    // Enable receiver and transmitter
+    UCSR0B = (1 << RXEN0) | (1 << TXEN0);
+    // async 1 stop bit 8bit char no parity bits
+    UCSR0C = (1 << UCSZ00) | (1 << UCSZ01);
 
     writeReg(0x12, 0x80);
     _delay_ms(100);

@@ -11,6 +11,8 @@
         "board_init.h": "c",
         "general.h": "c",
         "delay.h": "c",
-        "utilities.h": "c"
+        "utilities.h": "c",
+        "twi.h": "c",
+        "macros_regs_ov7670.h": "c"
     }
 }

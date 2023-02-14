@@ -18,6 +18,7 @@ int sample(uint8_t data[40]);
 int parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity);
 
 int confirm(int us, uint8_t level) {
+    // Check if the sensor responds as expected
     // wait one more count to ensure.
     int cnt = us / 10 + 1;
 
@@ -94,6 +95,7 @@ int sample(uint8_t data[40]) {
 }
 
 int parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity) {
+    // Extract values and compare checksum to ensure data accuracy
     uint8_t humidity = bits2byte(data);
     uint8_t humidity2 = bits2byte(data + 8);
     uint8_t temperature = bits2byte(data + 16);
