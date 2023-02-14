@@ -13,9 +13,7 @@ void lcd_test(void) {
     disp_str(1, 3, MESSAGE);
 }
 
-/*
 int main(void) {
     lcd_test();
     return 0;
 }
-*/

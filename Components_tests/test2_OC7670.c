@@ -10,10 +10,9 @@
 #define WIDTH 320
 #define HEIGHT 240
 
-//#define WIDTH 640
-//#define HEIGHT 480
+// #define WIDTH 640
+// #define HEIGHT 480
 
-/*
 int main() {
     // Setup
     arduinoUnoInit();
@@ -28,4 +27,3 @@ int main() {
     }
     return 0;
 }
-*/

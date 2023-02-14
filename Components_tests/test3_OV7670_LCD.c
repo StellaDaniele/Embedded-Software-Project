@@ -15,7 +15,6 @@
 
 #define MESSAGE "Will it work??"
 
-/*
 int main(void) {
     // Setup
     arduinoUnoInit();
@@ -36,4 +35,3 @@ int main(void) {
     }
     return 0;
 }
-*/
