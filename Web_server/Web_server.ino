@@ -5,32 +5,25 @@ This code works also with the ESP8266.
 */
 
 #include <ESP8266WiFi.h>
-#include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <WebSocketsServer.h>
 
 #include "ssid_password.hpp"
+#include "html_js.hpp"
 
 #define WIDTH 320
 #define HEIGHT 240
+#define DEBUG
 
 const char* ssid = SSID;
 const char* password = PASSWORD;
 
-#define BUFSIZE 19200
-// 19200 = 76800/4 (easier buffers management)
-char buf1[BUFSIZE];
-char buf2[BUFSIZE];
-
-char* pWriteBuf = buf1;
-char* pSendBuf = buf2;
-
 const char command[] = { '*', 'R', 'D', 'Y', '*' };
-WiFiServer server(80);
+
+ESP8266WebServer server(80);
+WebSocketsServer webSocket = WebSocketsServer(81);
 
 void setup(void) {
-  ESP.wdtEnable(16000);
-  // ESP.wdtDisable();
-
   Serial.begin(1000000);
   WiFi.begin(ssid, password);
 #ifdef DEBUG
@@ -51,79 +44,79 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 #endif
-
+  server.on("/", handle_client);
   server.begin();
 
 #ifdef DEBUG
   Serial.println("HTTP server started");
 #endif
+
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+#ifdef DEBUG
+  Serial.println("webSocket started");
+#endif
 }
 
+uint8_t brightness;
+uint8_t* pbrightness = &brightness;
+bool new_image = true;
+
 void loop(void) {
-  ESP.wdtFeed();
-  WiFiClient client = server.available();
-  if (client) {
-#ifdef DEBUG
-    Serial.println("New client detected.");
-#endif
-    client.print("<!DOCTYPE html><html><head><title>IOT_webserver</title> \
-      <meta name='viewport' content='width=device-width, initial-scale=1.0'>\
-      </head><body><canvas id='myCanvas' width='320' height='240'></canvas><script>var brightnessValues=[");
-    int i = 0;
-    while (true) {  // Wait for a new image
-      ESP.wdtFeed();
-      if (Serial.available()) {
-        char cc = (char)Serial.read();
+  server.handleClient();
+  webSocket.loop();
 
-        if (command[i] == cc) {
-          i++;
-        } else {
-          i = 0;
-        }
-        if (i >= sizeof(command)) {
-          break;
-        }
-      }
+  if (Serial.available() > 0) {
+    if (new_image) {
+      new_image = false;
+      find_new_image();
+    } else {
+      *pbrightness = Serial.read();
+      webSocket.broadcastBIN(pbrightness, 1);
     }
-    i = 0;  // now counts pixels
-    while (1) {
-      ESP.wdtFeed();
-      while (Serial.available()) {
-        ESP.wdtFeed();
-        if (pWriteBuf - buf1 + BUFSIZE > pSendBuf - buf2) {
-          // switch buffers
-          char* tmp = pWriteBuf;
-          pWriteBuf = pSendBuf;
-          pSendBuf = tmp;
-        }
+  }
+}
 
-        *pWriteBuf++ = ((char)Serial.read()) & 0xFF;
-        *pWriteBuf++ = ',';
+void handle_client() {
+#ifdef DEBUG
+  Serial.println("New client connected to server");
+#endif
+  server.send(200, "text/html", html);
+}
 
-        if (pWriteBuf - buf1 == BUFSIZE) {
-          client.write((uint8_t*)pSendBuf, BUFSIZE);
-          pWriteBuf = buf1;
-        }
-        ++i;
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
+#ifdef DEBUG
+  switch (type) {
+    case WStype_DISCONNECTED:
+      Serial.printf("[%u] Disconnected!\n", num);
+      break;
+    case WStype_CONNECTED:
+      {
+        IPAddress ip = webSocket.remoteIP(num);
+        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+      }
+      break;
+    case WStype_BIN:
+      Serial.printf("[%u] get binary lenght: %u\n", num, length);
+      // Use the data received here
+      break;
+  }
+#endif
+}
 
-        if (i == 76800) {
-          client.print("];"
-                       "var canvas = document.getElementById('myCanvas');"
-                       "var ctx = canvas.getContext('2d');"
-                       "var imageData = ctx.createImageData(320, 240);"
-                       "for (var i = 0; i < brightnessValues.length; i++) {"
-                       "var brightness = brightnessValues[i];"
-                       "var index = i * 4;"
-                       "imageData.data[index] = brightness;"
-                       "imageData.data[index + 1] = brightness;"
-                       "imageData.data[index + 2] = brightness;"
-                       "imageData.data[index + 3] = 255;"
-                       "}"
-                       "ctx.putImageData(imageData, 0, 0);"
-                       "</script></body></html>");
-          client.flush();
-          client.stop();
-        }
+void find_new_image() {
+  int i = 0;
+  while (true) {
+    ESP.wdtFeed();
+    if (Serial.available()) {
+      char cc = (char)Serial.read();
+      if (command[i] == cc) {
+        i++;
+      } else {
+        i = 0;
+      }
+      if (i >= sizeof(command)) {
+        break;
       }
     }
   }
