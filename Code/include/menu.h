@@ -4,10 +4,10 @@
 
 #include "joystick.h"
 typedef enum states { MENU,
-              SENSORS,
-              CAMERA,
-              SETTINGS,
-              REBOOT } states;
+                      SENSORS,
+                      CAMERA,
+                      SETTINGS,
+                      REBOOT } states;
 
 extern states curr_state;
 extern bool new_state;

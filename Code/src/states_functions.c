@@ -18,7 +18,7 @@
 
 uint8_t threshold_temp = 18;
 
-void sensors_state(void) {
+inline __attribute__((always_inline)) void sensors_state(void) {
     uint8_t temperature = 0;
     uint8_t humidity = 0;
     int res;
@@ -61,7 +61,7 @@ void sensors_state(void) {
     }
 }
 
-void camera_state(void) {
+inline __attribute__((always_inline)) void camera_state(void) {
     // Setup
     // arduinoUnoInit();
     disp_str(1, 1, "INITIALIZING");
@@ -88,7 +88,7 @@ void camera_state(void) {
     }
 }
 
-void settings_state(void) {
+inline __attribute__((always_inline)) void settings_state(void) {
     disp_str(1, 1, "SET THRESHOLD:");
     disp_str(1, 2, "CURRENT VALUE:");
     disp_str(18, 2, "C");
@@ -122,6 +122,6 @@ void settings_state(void) {
     }
 }
 
-void reboot_state(void) {
+inline __attribute__((always_inline)) void reboot_state(void) {
     reset_board();
 }

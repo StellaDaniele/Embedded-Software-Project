@@ -3,13 +3,11 @@
 
 #include <stdbool.h>
 typedef enum joystick_dir { dir_nothing,
-                    U,
-                    D,
-                    R,
-                    L,
-                    C } joystick_dir;
-
-
+                            U,
+                            D,
+                            R,
+                            L,
+                            C } joystick_dir;
 
 extern joystick_dir current;
 extern volatile bool central_button_pressed_interrupt;
