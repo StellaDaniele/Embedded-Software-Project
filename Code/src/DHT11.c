@@ -63,7 +63,7 @@ int sample(uint8_t data[40]) {
     if (confirm(80, 1))
         return 101;
 
-    // DHT11 data transmite:
+    // DHT11 data transmit:
     // 1bit start, PULL LOW 50us
     // PULL HIGH 26-28us, bit(0)
     // PULL HIGH 70us, bit(1)
