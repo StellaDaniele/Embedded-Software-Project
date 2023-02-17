@@ -37,7 +37,6 @@
  * This function initializes the LCD display by setting the data direction registers
  * and writing to the display to configure it.
  */
-
 void start_lcd(void);
 
 /**
