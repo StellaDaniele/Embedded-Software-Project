@@ -1,21 +1,47 @@
+/**
+ * @file joystick.h
+ * @brief Functions for using the joystick on an ATmega2560 microcontroller
+ */
+
 #ifndef __JOYSTICK_H__
 #define __JOYSTICK_H__
 
 #include <stdbool.h>
-typedef enum joystick_dir { dir_nothing,
-                            U,
-                            D,
-                            R,
-                            L,
-                            C } joystick_dir;
+
+/**
+ * @brief Joystick directions
+ */
+typedef enum joystick_dir {
+    dir_nothing, /**< No direction */
+    U,           /**< Up direction */
+    D,           /**< Down direction */
+    R,           /**< Right direction */
+    L,           /**< Left direction */
+    C            /**< Central button direction */
+} joystick_dir;
 
 extern joystick_dir current;
 extern volatile bool central_button_pressed_interrupt;
 
+/**
+ * @brief Initializes the joystick
+ */
 void init_joystick();
-// returns true if new movement detected, sets "current" global variable to new movement
+
+/**
+ * @brief Checks if the joystick has a new direction
+ * @return True if the joystick has a new direction, false otherwise
+ */
 bool joystick_new_direction();
+
+/**
+ * @brief Enables the central button interrupt
+ */
 void enable_central_button_interrupt(void);
+
+/**
+ * @brief Disables the central button interrupt
+ */
 void disable_central_button_interrupt(void);
 
 #endif

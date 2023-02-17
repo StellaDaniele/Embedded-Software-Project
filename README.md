@@ -37,7 +37,9 @@ The pitch video demonstration can be found <a href="https://youtu.be/KyKZRw-Gbsg
 
 ## Documentation
 ### Libraries documentation
-I did not make the documentation for the libraries I created for the components connected to the ATmega2560. However, the entire code is commented on and self-contained. The header files contain comments about what the functions do, the source code files contain comments about how everything was implemented. See [Software architecture and Working Scheme](#software-architecture-and-working-scheme) for the most important information.
+The [documentation](./DOCUMENTATION.md) can be found in the main folder. In all the header files there is the Doxygen-style documentation for all the functions.
+
+See [Software architecture and Working Scheme](#software-architecture-and-working-scheme) for the most important information.
 
 ### Error codes meaning
 If the board encounters an error, it enters an error state. In this error state, all the peripherals are turned off (even the internal ones), the red LED blinks and the error is displayed on the LCD. Here's what each error code means:
@@ -178,12 +180,14 @@ The working flow is quite straightforward: the MCU starts showing the menu on th
 For this MCU I did not have to use sophisticated algorithms or data structures, there are only a few structs for the camera module and some enums:
 * Joystick:
 ```
-typedef enum joystick_dir { dir_nothing,
-                            U,
-                            D,
-                            R,
-                            L,
-                            C } joystick_dir;
+typedef enum joystick_dir {
+    dir_nothing, /**< No direction */
+    U,           /**< Up direction */
+    D,           /**< Down direction */
+    R,           /**< Right direction */
+    L,           /**< Left direction */
+    C            /**< Central button direction */
+} joystick_dir;
 ```
 
 * Menu:

@@ -1,3 +1,8 @@
+/**
+ * @file DHT11.h
+ * @brief Functions for using the DHT11 temperature and humidity sensor on an ATmega2560 microcontroller
+ */
+
 #ifndef __DHT11_H__
 #define __DHT11_H__
 
@@ -20,12 +25,13 @@ to enable the pull-up resistor
 #define SET_INPUT_DHT SET_LOW_DHT DDR_DHT &= ~(1 << DHT_PIN);
 #define SET_OUTPUT_DHT DDR_DHT |= (1 << DHT_PIN);
 
-/*
-Reads the temperature and the humidity and stores the value
-in the two variables passed as parameters. pdata is the buffer,
-useful for debugging purposes. To use normally, call it with nullptr
-as pdata.
-*/
+/**
+ *@brief Reads data from the DHT11 sensor and extracts temperature and humidity values.
+ *@param ptemperature Pointer to where the temperature value should be stored.
+ *@param phumidity Pointer to where the humidity value should be stored.
+ *@param pdata Optional output buffer to store the sampled data.
+ *@return 0 if successful, or an error code if an error occurs during sampling or parsing.
+ */
 int read(uint8_t* ptemperature, uint8_t* phumidity, uint8_t pdata[40]);
 
 #endif

@@ -1,3 +1,8 @@
+/**
+ * @file general.h
+ * @brief Functions for initializing the ATmega2560 microcontroller (timers and external interrupts)
+ */
+
 #ifndef __GENERAL_H__
 #define __GENERAL_H__
 
@@ -37,8 +42,19 @@ extern volatile int8_t encoder_position;
 extern volatile bool encoder_sw_pressed_interrupt;
 extern volatile bool encoder_changed;
 
+/**
+ * @brief Initializes the board by setting up pins and configuring Timer 1 to generate interrupts every 1ms.
+ */
 void board_init(void);
+
+/**
+ * @brief Enables the interrupt for the rotary encoder on pins CLK, DT, and SW.
+ */
 void enable_encoder_interrupt(void);
+
+/**
+ * @brief Disables the interrupt for the rotary encoder on pins CLK, DT, and SW.
+ */
 void disable_encoder_interrupt(void);
 
 #endif

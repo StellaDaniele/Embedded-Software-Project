@@ -1,5 +1,3 @@
-
-
 #include "general.h"
 
 #include <avr/interrupt.h>

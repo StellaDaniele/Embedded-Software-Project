@@ -1,3 +1,8 @@
+/**
+ * @file LCD_display.h
+ * @brief Functions for using the LCD on an ATmega2560 microcontroller
+ */
+
 #ifndef __LCD_DISPLAY_H__
 #define __LCD_DISPLAY_H__
 
@@ -25,21 +30,88 @@
         There is also a resistor in the LCD board itself
     K : GND
 */
-// Starts up the LCD before using it
+
+/**
+ * @brief Initializes the LCD display.
+ *
+ * This function initializes the LCD display by setting the data direction registers
+ * and writing to the display to configure it.
+ */
+
 void start_lcd(void);
-// Clears the entire display
+
+/**
+ * @brief Clears the LCD display.
+ *
+ * This function clears the LCD display.
+ */
 void clrscr(void);
-// Moves the cursor to the given x and y coordinates
+
+/**
+ * @brief Sets the cursor to a specified position on the LCD display.
+ *
+ * This function sets the cursor to a specified position on the LCD display.
+ *
+ * @param x The horizontal position of the cursor.
+ * @param y The vertical position of the cursor.
+ */
 void gotoxy(unsigned char x, unsigned char y);
-// Displays the given string on the display, at the given coordinates
+
+/**
+ * @brief Displays a string at a specified position.
+ *
+ * This function displays a string at a specified position on the LCD display.
+ *
+ * @param x The horizontal position of the string.
+ * @param y The vertical position of the string.
+ * @param str The string to be displayed.
+ */
 void disp_str(unsigned char x, unsigned char y, char str[]);
-// Displays the given 16 bit positive number on the display, at the given coordinates
+
+/**
+ * @brief Displays an unsigned number at a specified position on the LCD display.
+ *
+ * This function displays a number at a specified position on the LCD display.
+ *
+ * @param a The horizontal position of the number.
+ * @param b The vertical position of the number.
+ * @param num The number to be displayed.
+ */
 void disp_pos(unsigned char a, unsigned char b, unsigned int num);
-// Displays the given number (both positive and negative) on the display, at the given coordinates
+
+/**
+ * @brief Displays a signed number at a specified position on the LCD display.
+ *
+ * This function displays a number at a specified position on the LCD display.
+ *
+ * @param a The horizontal position of the number.
+ * @param b The vertical position of the number.
+ * @param num The number to be displayed.
+ */
 void disp_num(unsigned char a, unsigned char b, int num);
-// Displays the given float number on the display, at the given coordinates
+
+/**
+ * @brief Displays a floating point number at a specified position on the LCD display.
+ *
+ * This function displays a floating point number at a specified position on the LCD display.
+ *
+ * @param a The horizontal position of the number.
+ * @param b The vertical position of the number.
+ * @param num The number to be displayed.
+ * @param prec The precision (digits to display after the point).
+ */
 void disp_float(char a, char b, float num, unsigned char prec);
-// Displays the given number on the display, after the string, at the given coordinates
+
+/**
+ * @brief Displays a number at a specified position on the LCD display, after the string.
+ *
+ * This function displays a number at a specified position on the LCD display, after the string.
+ *
+ * @param a The horizontal position of the number.
+ * @param b The vertical position of the number.
+ * @param str The string to be displayed.
+ * @param num The number to be displayed.
+ */
 void disp_str_num(unsigned char a, unsigned char b, char str[], int num);
 
 #endif

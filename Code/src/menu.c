@@ -8,7 +8,7 @@ states curr_state;
 bool new_state;
 static int selection_x = 1, selection_y = 1;
 
-void init_menu() {
+void init_menu(void) {
     curr_state = MENU;
     new_state = false;
     clrscr();
