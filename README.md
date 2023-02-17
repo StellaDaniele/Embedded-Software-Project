@@ -14,6 +14,8 @@
   - [Libraries documentation](#libraries-documentation)
   - [Error codes meaning](#error-codes-meaning)
   - [Serial communication](#serial-communication)
+  - [Debugging](#debugging)
+  - [Web Server](#web-server)
 - [Known issues](#known-issues)
 - [Project Layout](#project-layout)
 - [Requirements](#requirements)
@@ -28,7 +30,7 @@ I wanted to create a real-world IoT application but have the chance to learn how
 * ESP8266: hosts a web server on port 80 and a WebSocket on port 81. It is programmed in C++.
 * ATmega2560: does everything else, it handles all the sensors. It is programmed bare metal in C without any component libraries.
 
-The [PowerPoint presentation [IT WILL BE ADDED SOON]](./) for the oral exam is in the main folder.
+The [PowerPoint presentation](./Presentation_oral_exam.pdf) for the oral exam is in the main folder.
 
 The pitch video demonstration can be found <a href="https://youtu.be/KyKZRw-Gbsg">here</a>.
 <p align="right">(<a href="#top">Back to top</a>)</p>
@@ -60,11 +62,23 @@ If the board encounters an error, it enters an error state. In this error state,
 ### Serial communication
 The ATmega2560 sends the raw image on the UART0 at 1,000,000 of baud rate. It is possible to connect it to any device that supports UART communication. For instance, in the pitch video linked above, I used a raspberry pi 3b+ to demonstrate this. The Python script I used can be found in the ["Scripts"](./Scripts) folder. I uploaded the version that I used for debugging on Windows, but with small changes, it can be adapted for Linux or scale the PyGame window to fullscreen. That script was developed for debugging purposes, it surely is not efficient. In that folder, there is also a small script to easily detect what port the board is connected to.
 
+### Debugging
+The ESP8266 does not send error codes if something goes wrong, but sends information via serial. It is not connected to the ATmega2560 as I did not have space on the LCD to show the information anyways. To enable the transmission of debugging information, it is needed to compile the ```.ino``` file adding ```define DEBUG```. If such macro is defined, it communicates when it connects to the WiFi, its IP address, the correct start of the web server and of the WebSocket, and when a client connects.
+
+### Web Server
+In the ["Web_server"](./Web_server) folder you can find two files besides the `.ino`. The `homepage.htm` contains the HTML web page that is sent by the web server to the client. All the JavaScript code that connects to the WebSocket and renders the image is there. The `html_js.hpp` contains the same thing, but all the code is stored in a Raw string Literal that is then used in the `.ino` file by the web server. I chose to do this because it was easier for me to work on the HTML and JS code on VS Code, so that I could also test it.
+
+That folder should also contain the file `ssid_password.hpp`, which was omitted. You can find more information about this in the [Software requirements](#software-requirements) section.
+
 <p align="right">(<a href="#top">Back to top</a>)</p>
 
 ## Known issues
 The project is not perfect. There are still some issues that I did not have time to fix. The following list includes all the problems that I have encountered during all the tests that I carried out:
 * The first one or two images captured by the camera tend to be a little overexposed. It does not always happen, but most times it does. I still have to understand if it is because of the camera sensor or if I can do something about it by changing some of the parameters I send to the camera in the setup routine.
+<p align="center">
+<img src="./doc-images/overexposed.png" height="240px">
+</p>
+
 * Sometimes the camera data is bugged like there was an additional pixel that should not exist that unbalances the entire image. I guess that it is some kind of communication problem caused by some interference or crosstalk between the wires as I have a ton of wires packed. So far, the only fix for this is to reset the board (or enter the reboot state). The images in this case look something like this:
 <p align="center">
 <img src="./doc-images/error_pixel.png" height="240px">
@@ -130,6 +144,12 @@ I used the following libraries:
 * ESP8266WiFi by Ivan Grokhotkov
 * ESP8266WebServer by Ivan Grokhotkov
 * WebSockets by Markus Sattler (I downloaded it from <a href="https://www.arduinolibraries.info/libraries/web-sockets">here</a>, and added the ```.zip``` to the IDE)
+
+It is important to note that in order to compile the ```.ino``` file it is necessary to add the ```ssid_password.hpp``` header. This header is not in the folder, I added it to `.gitignore`< you can either add it or just modify the `.ino` file and add the SSID and password there. Anyway, the header shall be like this:
+```
+#define SSID "My SSID"
+#define PASSWORD "My password"
+```
 
 <p align="right">(<a href="#top">Back to top</a>)</p>
 
