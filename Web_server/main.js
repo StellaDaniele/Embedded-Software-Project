@@ -1,7 +1,7 @@
 const width = 320
 const height = 240
 let brightnessArray = new Uint8Array(width * height)
-let i = 0
+let pixels = 0
 let canvas_num = 0
 const socket = new WebSocket('ws://192.168.12.3:81')
 
@@ -15,12 +15,12 @@ socket.onmessage = function (event) {
   // The data received from the WebSocket is stored in the "data" property of the event object
   const brightness = new Uint8Array(event.data)
 
-  // Use the data received
-  //console.log(brightness)
-  brightnessArray.set(brightness, i * width * 60)
-  i++
-  if (i * width * 60 == width * height) {
-    i = 0
+  // console.log(brightness)
+  brightnessArray.set(brightness, pixels * width * 60)
+  pixels++
+  // pixels * width * 60 == width * height when the whole image is received
+  if (pixels == 4) {
+    pixels = 0
     renderImage(canvas_num++)
   }
 }
@@ -44,7 +44,7 @@ function renderImage (canvasId) {
     imageData.data[index] = brightness
     imageData.data[index + 1] = brightness
     imageData.data[index + 2] = brightness
-    imageData.data[index + 3] = 255
+    imageData.data[index + 3] = 255 // complete opacity
   }
   ctx.putImageData(imageData, 0, 0)
 }

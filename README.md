@@ -65,12 +65,17 @@ If the board encounters an error, it enters an error state. In this error state,
 The ATmega2560 sends the raw image on the UART0 at 1,000,000 of baud rate. It is possible to connect it to any device that supports UART communication. For instance, in the pitch video linked above, I used a raspberry pi 3b+ to demonstrate this. The Python script I used can be found in the ["Scripts"](./Scripts) folder. I uploaded the version that I used for debugging on Windows, but with small changes, it can be adapted for Linux or scale the PyGame window to fullscreen. That script was developed for debugging purposes, it surely is not efficient. In that folder, there is also a small script to easily detect what port the board is connected to.
 
 ### Debugging
-The ESP8266 does not send error codes if something goes wrong, but sends information via serial. It is not connected to the ATmega2560 as I did not have space on the LCD to show the information anyways. To enable the transmission of debugging information, it is needed to compile the ```.ino``` file adding ```define DEBUG```. If such macro is defined, it communicates when it connects to the WiFi, its IP address, the correct start of the web server and of the WebSocket, and when a client connects.
+The ESP8266 does not send error codes if something goes wrong, but sends information via serial. It is not connected to the ATmega2560 as I did not have space on the LCD to show the information anyways. To enable the transmission of debugging information, it is needed to compile the ```.ino``` file adding ```#define DEBUG```. If such macro is defined, it communicates when it connects to the WiFi, its IP address, the correct start of the web server and of the WebSocket, and when a client connects.
 
 ### Web Server
 In the ["Web_server"](./Web_server) folder you can find three files besides the `.ino`. The files `homepage.htm` and `main.js` contain the HTML web page and the JavaScript code that are sent by the web server to the client. All the JavaScript code that connects to the WebSocket and renders the image is there. The `html_js.hpp` contains the same thing, the JS code is copied into the HTML code and everything is stored in a Raw string Literal that is then used in the `.ino` file by the web server. I chose to do this because it was easier for me to work on the web page on VS Code, so that I could also test it by running it locally.
 
 That folder should also contain the file `ssid_password.hpp`, which was omitted. You can find more information about this in the [Software requirements](#software-requirements) section.
+
+It is important to note that it is necessary to change the IP address of the WebSocket in the JavaScript code that is sent to the client. The only line of code that needs to be modified is at the beginning of the program:
+```
+const socket = new WebSocket('ws://ESP8266_IP_ADDRESS:81')
+```
 
 <p align="right">(<a href="#top">Back to top</a>)</p>
 
