@@ -12,18 +12,18 @@ so that it is easier to debug.
 #include <string.h>
 #include <util/delay.h>
 
-int confirm(int us, uint8_t level);
+int8_t confirm(uint8_t us, uint8_t level);
 uint8_t bits2byte(uint8_t data[8]);
-int sample(uint8_t data[40]);
-int parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity);
+int8_t sample(uint8_t data[40]);
+int8_t parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity);
 
-int confirm(int us, uint8_t level) {
+int8_t confirm(uint8_t us, uint8_t level) {
     // Check if the sensor responds as expected
     // wait one more count to ensure.
-    int cnt = us / 10 + 1;
+    uint8_t cnt = us / 10 + 1;
 
     bool ok = false;
-    for (int i = 0; i < cnt; i++) {
+    for (uint8_t i = 0; i < cnt; i++) {
         if (READ_DHT_PIN != level) {
             ok = true;
             break;
@@ -35,12 +35,12 @@ int confirm(int us, uint8_t level) {
 
 uint8_t bits2byte(uint8_t data[8]) {
     uint8_t v = 0;
-    for (int i = 0; i < 8; i++)
+    for (uint8_t i = 0; i < 8; i++)
         v += data[i] << (7 - i);
     return v;
 }
 
-int sample(uint8_t data[40]) {
+int8_t sample(uint8_t data[40]) {
     // empty output data.
     memset(data, 0, 40);
 
@@ -67,15 +67,15 @@ int sample(uint8_t data[40]) {
     // 1bit start, PULL LOW 50us
     // PULL HIGH 26-28us, bit(0)
     // PULL HIGH 70us, bit(1)
-    for (int j = 0; j < 40; j++) {
+    for (uint8_t j = 0; j < 40; j++) {
         if (confirm(50, 0))
             return 102;
         // read a bit, should never call method,
         // for the method call use more than 20us,
         // so it maybe failed to detect the bit0.
         bool ok = false;
-        int tick = 0;
-        for (int i = 0; i < 8; i++, tick++) {
+        uint8_t tick = 0;
+        for (uint8_t i = 0; i < 8; i++, tick++) {
             if (READ_DHT_PIN != 1) {
                 ok = true;
                 break;
@@ -94,7 +94,7 @@ int sample(uint8_t data[40]) {
     return 0;
 }
 
-int parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity) {
+int8_t parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity) {
     // Extract values and compare checksum to ensure data accuracy
     uint8_t humidity = bits2byte(data);
     uint8_t humidity2 = bits2byte(data + 8);
@@ -109,8 +109,8 @@ int parse(uint8_t data[40], uint8_t* ptemperature, uint8_t* phumidity) {
     return 0;
 }
 
-int read(uint8_t* ptemperature, uint8_t* phumidity, uint8_t pdata[40]) {
-    int ret = 0;
+int8_t read(uint8_t* ptemperature, uint8_t* phumidity, uint8_t pdata[40]) {
+    int8_t ret = 0;
     uint8_t data[40] = {0};
     if ((ret = sample(data)) != 0)
         return ret;

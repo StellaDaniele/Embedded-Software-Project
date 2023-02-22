@@ -16,6 +16,10 @@
 #include "states_functions.h"
 #include "utilities.h"
 
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+
 uint8_t threshold_temp = 18;
 
 inline __attribute__((always_inline)) void sensors_state(void) {

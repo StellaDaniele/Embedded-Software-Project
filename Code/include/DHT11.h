@@ -32,6 +32,6 @@ to enable the pull-up resistor
  *@param pdata Optional output buffer to store the sampled data.
  *@return 0 if successful, or an error code if an error occurs during sampling or parsing.
  */
-int read(uint8_t* ptemperature, uint8_t* phumidity, uint8_t pdata[40]);
+int8_t read(uint8_t* ptemperature, uint8_t* phumidity, uint8_t pdata[40]);
 
 #endif

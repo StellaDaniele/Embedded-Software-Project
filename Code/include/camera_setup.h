@@ -11,17 +11,17 @@
 /**
  * @brief Initializes the camera module.
  */
-void camInit();
+void camInit(void);
 
 /**
  * @brief Sets the camera resolution to QVGA.
  */
-void setResolution();
+void setResolution(void);
 
 /**
  * @brief Sets the camera color format to YUV422.
  */
-void setColor();
+void setColor(void);
 
 /**
  * @brief Sets the camera clock frequency.

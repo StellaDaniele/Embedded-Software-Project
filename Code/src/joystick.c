@@ -8,6 +8,10 @@
 #include "LCD_display.h"
 #include "utilities.h"
 
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+
 #define CLEAR_MUX_ADC \
     ADMUX &= ~((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3) | (1 << MUX4));
 
@@ -31,7 +35,7 @@ volatile bool central_button_pressed_interrupt = false;
 #define LOW_ADC 200
 #define HIGH_ADC 800
 
-void init_joystick() {
+void init_joystick(void) {
     // DDRF &= ~((1 << DDD0) | (1 << DDD1));
     ADMUX |= (1 << REFS0);  // | (1 << ADLAR);  // AVCC, Left Adjust Result
     ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
@@ -40,7 +44,7 @@ void init_joystick() {
     enable_central_button_interrupt();
 }
 
-int read_ADC() {
+__attribute__((always_inline)) inline int read_ADC(void) {
     ADCSRA |= (1 << ADSC);
     while (!(ADCSRA & (1 << ADIF)))
         ;
@@ -48,7 +52,7 @@ int read_ADC() {
     return ADCL | (ADCH << 8);
 }
 
-enum joystick_dir disp_joystick_pos() {
+enum joystick_dir disp_joystick_pos(void) {
     SELECT_ADC_JOYPAD_X
     value_x = read_ADC();
     SELECT_ADC_JOYPAD_Y
@@ -81,7 +85,7 @@ enum joystick_dir disp_joystick_pos() {
     return dir_nothing;
 }
 
-bool joystick_new_direction() {
+bool joystick_new_direction(void) {
     switch (disp_joystick_pos()) {
         case dir_nothing:
             first = true;

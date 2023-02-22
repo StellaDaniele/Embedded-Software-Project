@@ -7,6 +7,10 @@
 
 #include "utilities.h"
 
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+
 #define ENCODER_CLK_STATE ((PIN_ENCODER_CLK & (1 << ENCODER_CLK)) != 0)
 #define ENCODER_DT_STATE ((PIN_ENCODER_DT & (1 << ENCODER_DT)) != 0)
 
@@ -52,7 +56,7 @@ void board_init(void) {
     sei();
 }
 
-void enable_encoder_interrupt(void) {
+__attribute__((always_inline)) inline void enable_encoder_interrupt(void) {
     PCICR |= (1 << PCIE2);
     PCMSK2 |= (1 << PCINT16);  // CLK
     PCMSK2 |= (1 << PCINT17);  // DT
@@ -60,7 +64,7 @@ void enable_encoder_interrupt(void) {
     encoder_position = 0;
 }
 
-void disable_encoder_interrupt(void) {
+__attribute__((always_inline)) inline void disable_encoder_interrupt(void) {
     PCICR &= ~(1 << PCIE2);
     PCMSK2 &= ~(1 << PCINT16);
     PCMSK2 &= ~(1 << PCINT17);
@@ -93,5 +97,5 @@ ISR(PCINT2_vect) {
     }
     if (!(PIN_ENCODER_SW & (1 << ENCODER_SW)))
         encoder_sw_pressed_interrupt = true;
-    PCIFR |= (1 << PCIF2); // Reset interrupt flag
+    PCIFR |= (1 << PCIF2);  // Reset interrupt flag
 }

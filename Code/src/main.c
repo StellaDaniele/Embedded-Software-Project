@@ -54,5 +54,7 @@ int main(void) {
             central_button_pressed_interrupt = false;
         }
     }
+    // Should never be here
+    error(GENERAL_ERROR, 0);
     return 0;
 }

@@ -1,8 +1,12 @@
 #include "LCD_display.h"
 // Displays a character on the display, first it writes the 4 bits
-void display(unsigned char car, unsigned char stat);
-void float_to_int(float number, char digits, int *integer_part, int *floating_part);
-int power(int base, int exponent);
+void display(uint8_t car, uint8_t stat);
+void float_to_int(float number, uint8_t digits, int32_t *integer_part, int32_t *floating_part);
+uint32_t power(uint32_t base, uint32_t exponent);
+
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
 
 #define CONF 0
 #define DATA 1
@@ -87,7 +91,7 @@ void start_lcd(void) {
     _delay_us(1000);
 }
 
-void display(unsigned char car, unsigned char stat) {
+void display(uint8_t car, uint8_t stat) {
     if (stat)
         SET_RS;
     else
@@ -108,19 +112,19 @@ void display(unsigned char car, unsigned char stat) {
     _delay_ms(2);
 }
 
-void clrscr(void) {
+__attribute__((always_inline)) inline void clrscr(void) {
     display(0x01, CONF);
     _delay_ms(2);
 }
 
-void disp_str(unsigned char x, unsigned char y, char str[]) {
-    unsigned char num;
+void disp_str(uint8_t x, uint8_t y, char str[]) {
+    uint8_t num;
     gotoxy(x, y);
     for (num = 0; str[num] != 0; num++)
         display(str[num], DATA);
 }
 
-void gotoxy(unsigned char x, unsigned char y) {
+void gotoxy(uint8_t x, uint8_t y) {
     x = (x > 20) ? 20 : x;
     y = (y > 4) ? 4 : y;
     x += (y - 1) * 20;
@@ -136,8 +140,8 @@ void gotoxy(unsigned char x, unsigned char y) {
     _delay_ms(2);
 }
 
-void disp_pos(unsigned char a, unsigned char b, unsigned int num) {
-    unsigned char i, zeros, digits[6];
+void disp_pos(uint8_t a, uint8_t b, uint32_t num) {
+    uint8_t i, zeros, digits[6];
     if (a != 0)
         gotoxy(a, b);
     for (i = 0; i < 5; i++) {  // Conversion from int to str
@@ -159,8 +163,8 @@ void disp_pos(unsigned char a, unsigned char b, unsigned int num) {
         display(' ', DATA);
 }
 
-void disp_float(char a, char b, float num, unsigned char prec) {
-    int integer_part = 0, floating_part = 0;
+void disp_float(uint8_t a, uint8_t b, float num, uint8_t prec) {
+    int32_t integer_part = 0, floating_part = 0;
 
     prec = (prec < 0) ? 2 : (prec > 5) ? 5
                                        : prec;
@@ -174,7 +178,7 @@ void disp_float(char a, char b, float num, unsigned char prec) {
     disp_pos(0, 0, floating_part);
 }
 
-void disp_num(unsigned char a, unsigned char b, int num) {
+void disp_num(uint8_t a, uint8_t b, int32_t num) {
     if (num < 0) {
         gotoxy(a, b);
         display('-', DATA);
@@ -184,21 +188,21 @@ void disp_num(unsigned char a, unsigned char b, int num) {
         disp_pos(a, b, num);
 }
 
-int power(int base, int exponent) {
+uint32_t power(uint32_t base, uint32_t exponent) {
     int result = 1;
     for (; exponent > 0; exponent--)
         result *= base;
     return result;
 }
 
-void float_to_int(float number, char digits, int *integer_part, int *floating_part) {
-    *integer_part = (int)number;
+void float_to_int(float number, uint8_t digits, int32_t *integer_part, int32_t *floating_part) {
+    *integer_part = (int32_t)number;
     *floating_part = (number - (float)*integer_part) * power(10, digits);
 }
 
-void disp_str_num(unsigned char a, unsigned char b, char str[], int num) {
+void disp_str_num(uint8_t a, uint8_t b, char str[], int32_t num) {
     disp_str(a, b, str);
-    int len = 0;
+    uint8_t len = 0;
     for (len = 0; str[len] != '\0'; len++)
         ;
     disp_num(a + len, b, num);

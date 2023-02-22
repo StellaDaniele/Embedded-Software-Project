@@ -9,11 +9,15 @@
 #include "macros_regs_ov7670.h"
 #include "utilities.h"
 
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+
 #define WAIT_FOR_TRANSMISSION_TWI  \
     while (!(TWCR & (1 << TWINT))) \
         ;
 
-void twiStart() {
+void twiStart(void) {
     // send start
     TWCR = ((1 << TWINT) | (1 << TWSTA) | (1 << TWEN));
     WAIT_FOR_TRANSMISSION_TWI
@@ -60,7 +64,7 @@ void wrSensorRegs8_8(const struct regval_list reglist[]) {
     }
 }
 
-void camInit() {
+void camInit(void) {
     // 8mhz PWM master clock
     DDRB |= (1 << PORTB4);  // pin 11 (clock output)
     // Disable external clock input and asynchronous operation
@@ -106,16 +110,16 @@ void camInit() {
     writeReg(REG_COM10, 32);  // PCLK does not toggle on HBLANK.
 }
 
-void setResolution() {
+__attribute__ ((always_inline)) inline void setResolution(void) {
     writeReg(REG_COM3, 4);  // REG_COM3 enable scaling
     wrSensorRegs8_8(qvga_ov7670);
 }
 
-void setColor() {
+__attribute__ ((always_inline)) inline void setColor(void) {
     wrSensorRegs8_8(yuv422_ov7670);
     // wrSensorRegs8_8(qvga_ov7670);
 }
 
-void setClocl(uint8_t x) {
+__attribute__ ((always_inline)) inline void setClocl(uint8_t x) {
     writeReg(REG_CLKRC, x);
 }

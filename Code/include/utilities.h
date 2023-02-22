@@ -25,7 +25,7 @@ typedef enum error_type { GENERAL_ERROR,
  * @param err an `error_type` enumeration that represents the type of error that occurred.
  * @param additional_info an integer that represents additional information about the error.
  */
-void error(error_type err, int additional_info);
+void error(error_type err, int32_t additional_info);
 
 /**
  * @brief Turns on an error LED and enters an infinite loop

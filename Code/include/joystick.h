@@ -26,13 +26,13 @@ extern volatile bool central_button_pressed_interrupt;
 /**
  * @brief Initializes the joystick
  */
-void init_joystick();
+void init_joystick(void);
 
 /**
  * @brief Checks if the joystick has a new direction
  * @return True if the joystick has a new direction, false otherwise
  */
-bool joystick_new_direction();
+bool joystick_new_direction(void);
 
 /**
  * @brief Enables the central button interrupt

@@ -6,7 +6,7 @@
 
 states curr_state;
 bool new_state;
-static int selection_x = 1, selection_y = 1;
+static int8_t selection_x = 1, selection_y = 1;
 
 void init_menu(void) {
     curr_state = MENU;

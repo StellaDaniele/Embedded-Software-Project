@@ -6,6 +6,10 @@
 #include <avr/wdt.h>
 #include <util/delay.h>
 
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+
 void error_led(void) {
     cli();
     PRR0 = 0xff;  // Disable peripherals in Power Reduction Register 0
@@ -17,7 +21,7 @@ void error_led(void) {
     }
 }
 
-void error(error_type err, int additional_info) {
+void error(error_type err, int32_t additional_info) {
     cli();
     PRR0 = 0xff;  // Disable peripherals in Power Reduction Register 0
     PRR1 = 0xff;  // Disable peripherals in Power Reduction Register 1
@@ -54,7 +58,7 @@ void error(error_type err, int additional_info) {
     }
 }
 
-void reset_board(void) {
+__attribute__((always_inline)) inline void reset_board(void) {
     cli();
     wdt_enable(WDTO_15MS);
     while (1)

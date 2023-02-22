@@ -54,7 +54,7 @@ void clrscr(void);
  * @param x The horizontal position of the cursor.
  * @param y The vertical position of the cursor.
  */
-void gotoxy(unsigned char x, unsigned char y);
+void gotoxy(uint8_t x, uint8_t y);
 
 /**
  * @brief Displays a string at a specified position.
@@ -65,7 +65,7 @@ void gotoxy(unsigned char x, unsigned char y);
  * @param y The vertical position of the string.
  * @param str The string to be displayed.
  */
-void disp_str(unsigned char x, unsigned char y, char str[]);
+void disp_str(uint8_t x, uint8_t y, char str[]);
 
 /**
  * @brief Displays an unsigned number at a specified position on the LCD display.
@@ -76,7 +76,7 @@ void disp_str(unsigned char x, unsigned char y, char str[]);
  * @param b The vertical position of the number.
  * @param num The number to be displayed.
  */
-void disp_pos(unsigned char a, unsigned char b, unsigned int num);
+void disp_pos(uint8_t a, uint8_t b, uint32_t num);
 
 /**
  * @brief Displays a signed number at a specified position on the LCD display.
@@ -87,7 +87,7 @@ void disp_pos(unsigned char a, unsigned char b, unsigned int num);
  * @param b The vertical position of the number.
  * @param num The number to be displayed.
  */
-void disp_num(unsigned char a, unsigned char b, int num);
+void disp_num(uint8_t a, uint8_t b, int32_t num);
 
 /**
  * @brief Displays a floating point number at a specified position on the LCD display.
@@ -99,7 +99,7 @@ void disp_num(unsigned char a, unsigned char b, int num);
  * @param num The number to be displayed.
  * @param prec The precision (digits to display after the point).
  */
-void disp_float(char a, char b, float num, unsigned char prec);
+void disp_float(uint8_t a, uint8_t b, float num, uint8_t prec);
 
 /**
  * @brief Displays a number at a specified position on the LCD display, after the string.
@@ -111,6 +111,6 @@ void disp_float(char a, char b, float num, unsigned char prec);
  * @param str The string to be displayed.
  * @param num The number to be displayed.
  */
-void disp_str_num(unsigned char a, unsigned char b, char str[], int num);
+void disp_str_num(uint8_t a, uint8_t b, char str[], int32_t num);
 
 #endif
