@@ -22,7 +22,7 @@
     ADMUX |= (1 << MUX0);
 
 joystick_dir current;
-static int value_x = 0, value_y = 0;
+static int32_t value_x = 0, value_y = 0;
 // static enum joystick_dir old = dir_nothing;
 static bool new_value = false, first = true;
 volatile bool central_button_pressed_interrupt = false;

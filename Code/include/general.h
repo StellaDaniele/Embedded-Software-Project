@@ -6,6 +6,7 @@
 #ifndef __GENERAL_H__
 #define __GENERAL_H__
 
+#include <avr/io.h>
 #include <stdbool.h>
 #include <stdint.h>
 
